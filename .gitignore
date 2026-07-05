@@ -1,3 +1,15 @@
+# Maven
+target/
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Environment
+.env
+application-local.yml
+
 # Compiled class file
 *.class
 
