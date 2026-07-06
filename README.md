@@ -9,8 +9,9 @@ Backend Spring Boot del proyecto Lumind. Repositorio en fase de configuración i
 | Componente | Estado |
 |------------|--------|
 | Aplicación Spring Boot | Configurada y ejecutable |
-| Conexión PostgreSQL + Flyway | Configurados (sin migraciones aún) |
+| Conexión PostgreSQL + Flyway | Configurados; migraciones `V1` (users) y `V2` (refresh_tokens) |
 | Spring Security | HTTP Basic; rutas públicas en Swagger y Actuator; JWT: dependencia y config (Fase 0), lógica pendiente |
+| Feature `user` | Entidad `User`, `UserRepository`, `UserSummaryResponse`, `UserMapper` (Fase 2) |
 | OpenAPI / Swagger UI | Configurado (sin operaciones de API) |
 | Endpoints REST de negocio | No implementados |
 | Tests | No implementados |
@@ -88,7 +89,7 @@ El resto de rutas requieren autenticación HTTP Basic.
 src/main/java/com/lumind/api/
 ├── config/          # Security, OpenAPI
 ├── auth/            # (preparado)
-├── user/
+├── user/            # User, UserRepository, UserSummaryResponse, UserMapper
 ├── habit/
 ├── task/
 ├── pomodoro/

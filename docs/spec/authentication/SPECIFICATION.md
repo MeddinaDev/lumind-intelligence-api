@@ -640,7 +640,7 @@ Los refresh tokens se persisten **hasheados con SHA-256**. El cliente recibe el 
 | `created_at` | TIMESTAMPTZ | NOT NULL |
 | `updated_at` | TIMESTAMPTZ | NOT NULL |
 
-Migración Flyway: `V1__create_users_table.sql` (numeración a confirmar según estado del repo).
+Migración Flyway: `V1__create_users_table.sql`.
 
 ### 11.2 Tabla `refresh_tokens`
 
@@ -721,8 +721,8 @@ jwt:
 | Fase | Descripción | Estado |
 |------|-------------|--------|
 | 0 | ADRs 003/004, dependencias JJWT, configuración JWT | ✅ Completada |
-| 1 | Capa común (`ErrorResponse`, excepciones, `GlobalExceptionHandler`) | ⏳ Pendiente |
-| 2 | Persistencia (`User`, migraciones Flyway) | ⏳ Pendiente |
+| 1 | Capa común (`ErrorResponse`, excepciones, `GlobalExceptionHandler`) | ✅ Completada |
+| 2 | Persistencia (`User`, migraciones Flyway) | ✅ Completada |
 | 3 | Infraestructura JWT (`JwtProperties`, `JwtService`) | ⏳ Pendiente |
 | 4 | Refresh tokens (`RefreshToken`, rotación) | ⏳ Pendiente |
 | 5 | Lógica de negocio (`AuthService`) | ⏳ Pendiente |
@@ -778,3 +778,4 @@ jwt:
 | 0.1.0 | 2026-07-06 | — | Borrador inicial para revisión |
 | 1.0.0 | 2026-07-06 | — | Aprobada; decisiones D-01 a D-06 confirmadas |
 | 1.0.1 | 2026-07-06 | — | Fase 0 completada; progreso por fases añadido en §15 |
+| 1.0.2 | 2026-07-06 | — | Fases 1 y 2 completadas; numeración Flyway V1/V2 confirmada |

@@ -84,3 +84,61 @@ Preparar la infraestructura de documentación, dependencias y configuración JWT
 
 ### Próximo paso
 Fase 1 — `ErrorResponse`, excepciones de dominio y `GlobalExceptionHandler`.
+
+---
+
+## 2026-07-06 — Fase 1
+
+### Sprint
+Sprint 2 - Authentication
+
+### Objetivo
+Implementar la capa común de manejo de errores antes de persistencia y lógica de autenticación.
+
+### Cambios realizados
+- Creado `ErrorResponse` y `FieldError` en `common.exception`.
+- Creadas excepciones de dominio: `EmailAlreadyExistsException`, `InvalidCredentialsException`, `AccountDisabledException`, `InvalidRefreshTokenException`.
+- Implementado `GlobalExceptionHandler` con `@RestControllerAdvice` y formato de error unificado.
+- Handlers de infraestructura: validación Bean Validation, JSON malformado y errores no controlados (`500`).
+
+### Decisiones tomadas
+- Mensajes de error fijos como constantes privadas en `GlobalExceptionHandler` (no clase `ErrorMessages` separada).
+- Excepciones marker sin mensaje; el handler controla el texto expuesto al cliente.
+- `JwtException` diferido a Fase 6 (filtro JWT fuera del ciclo MVC).
+- Tests del handler diferidos a Fase 8.
+
+### Estado del proyecto
+🔄 Sprint 2 en curso — Fase 1 completada; pendiente Fase 2 (persistencia `User` y migraciones Flyway).
+
+### Próximo paso
+Fase 2 — entidad `User`, `UserRepository` y migración Flyway `V1__create_users_table.sql`.
+
+---
+
+## 2026-07-06 — Fase 2
+
+### Sprint
+Sprint 2 - Authentication
+
+### Objetivo
+Implementar la capa de persistencia de usuarios: migraciones Flyway, entidad JPA, repositorio, DTO de respuesta y mapper MapStruct.
+
+### Cambios realizados
+- Creada migración Flyway `V1__create_users_table.sql` (tabla `users`).
+- Creada migración Flyway `V2__create_refresh_tokens_table.sql` (tabla `refresh_tokens`; esquema listo para Fase 4).
+- Creada entidad JPA `User` en `user.entity` con UUID generado en aplicación y timestamps automáticos.
+- Creado `UserRepository` con `existsByEmail` y `findByEmail`.
+- Creado `UserSummaryResponse` (record) en `user.dto.response`.
+- Creado `UserMapper` con MapStruct (`toSummaryResponse`).
+
+### Decisiones tomadas
+- UUID asignado en `@PrePersist` (D-05); sin `@GeneratedValue` ni DEFAULT en BD.
+- Sin relación JPA `User` ↔ `refresh_tokens` hasta Fase 4 (`RefreshToken` en `auth/`).
+- FK `refresh_tokens.user_id` con `ON DELETE CASCADE` a nivel SQL.
+- `@PrePersist` / `@PreUpdate` para `created_at` y `updated_at` (sin service en esta fase).
+
+### Estado del proyecto
+🔄 Sprint 2 en curso — Fase 2 completada; pendiente Fase 3 (infraestructura JWT: `JwtProperties`, `JwtService`).
+
+### Próximo paso
+Fase 3 — `JwtProperties` y `JwtService`.
