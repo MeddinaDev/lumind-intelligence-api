@@ -10,7 +10,7 @@ Backend Spring Boot del proyecto Lumind. Repositorio en fase de configuración i
 |------------|--------|
 | Aplicación Spring Boot | Configurada y ejecutable |
 | Conexión PostgreSQL + Flyway | Configurados (sin migraciones aún) |
-| Spring Security | HTTP Basic; rutas públicas en Swagger y Actuator |
+| Spring Security | HTTP Basic; rutas públicas en Swagger y Actuator; JWT: dependencia y config (Fase 0), lógica pendiente |
 | OpenAPI / Swagger UI | Configurado (sin operaciones de API) |
 | Endpoints REST de negocio | No implementados |
 | Tests | No implementados |
@@ -45,6 +45,7 @@ Variables de entorno (valores por defecto entre paréntesis):
 | `DB_USERNAME` | Usuario | `lumind` |
 | `DB_PASSWORD` | Contraseña | `lumind` |
 | `SERVER_PORT` | Puerto de la aplicación | `8080` |
+| `JWT_SECRET` | Secreto HMAC para firmar JWT (mín. 256 bits) | — (obligatorio) |
 
 Referencia completa en [`.env.example`](.env.example).
 
@@ -54,9 +55,14 @@ Referencia completa en [`.env.example`](.env.example).
 # Crear la base de datos y el usuario en PostgreSQL
 createdb lumind
 
+# Definir JWT_SECRET (obligatorio para arrancar la aplicación)
+export JWT_SECRET=$(openssl rand -base64 32)
+
 # Arrancar la aplicación
 mvn spring-boot:run
 ```
+
+> **Nota:** `JWT_SECRET` debe estar definido antes de ejecutar `mvn spring-boot:run`. Sin esta variable, Spring Boot no puede resolver la configuración JWT en `application.yml`. Puedes copiar [`.env.example`](.env.example) a `.env` y exportar las variables, o definirlas manualmente en tu shell.
 
 Otros comandos útiles:
 

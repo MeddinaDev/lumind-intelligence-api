@@ -12,6 +12,7 @@ Documento maestro del proyecto Lumind Intelligence API. Es la fuente de verdad p
 | **/docs** | Contexto de negocio, roadmap, ADRs, domain model, specs |
 | **README.md** | Onboarding rápido: setup, estado, enlaces |
 | **docs/LANGUAGE_POLICY.md** | Política oficial de idiomas |
+| **docs/sessions/CHANGELOG.md** | Development Log — registro de sprints, features y tareas importantes |
 
 Antes de implementar cualquier cambio, lee este archivo. Consulta `/docs` para el detalle de negocio y decisiones arquitectónicas.
 
@@ -55,18 +56,18 @@ Lumind es una plataforma de productividad impulsada por IA. El objetivo es const
 
 ## Estado actual del proyecto
 
-**Fase 1 / Sprint 1** — scaffolding inicial. Ten en cuenta el estado real del código:
+**Fase 2 / Sprint 2** — autenticación JWT (Fase 0 completada: ADRs, JJWT, config; implementación Fases 1–9 pendiente). Ten en cuenta el estado real del código:
 
 | Área | Estado |
 |------|--------|
 | Endpoints de negocio | No implementados (sin `@RestController`) |
-| Seguridad | HTTP Basic (`SecurityConfig`); JWT planificado (Fase 2) |
+| Seguridad | HTTP Basic (`SecurityConfig`); JWT: dependencia y config listas (Fase 0), lógica pendiente |
 | Flyway | Configurado; sin migraciones aún |
 | Docker | Planificado; sin `Dockerfile` ni `docker-compose` |
 | Gemini API | Planificado (Fase 7); sin integración |
 | Tests | Dependencias presentes; sin tests escritos |
 
-No asumas que JWT, Docker o Gemini están disponibles hasta que existan en `pom.xml` y en el código.
+No asumas que la autenticación JWT está operativa hasta que existan servicios, filtros y endpoints en el código. JJWT ya está en `pom.xml` y las propiedades JWT en `application.yml` (Fase 0 completada).
 
 ---
 
@@ -85,10 +86,14 @@ No asumas que JWT, Docker o Gemini están disponibles hasta que existan en `pom.
 - Lombok
 - JUnit + Mockito (dependencias; tests pendientes)
 - Spring Boot Actuator
+- JJWT 0.13.0 (dependencia; configuración en `application.yml` — Fase 0 Sprint 2)
+
+### Pendiente de implementación (Sprint 2 — auth)
+
+- Autenticación JWT operativa (endpoints, servicios, filtro, sustitución de HTTP Basic — Fases 1–7)
 
 ### Planificado
 
-- JWT (autenticación)
 - Docker
 - Gemini API (análisis de productividad)
 
@@ -252,8 +257,8 @@ Nada más.
 - Usa el principio de mínimo privilegio.
 - Sigue las mejores prácticas de Spring Security.
 
-Estrategia de seguridad: [docs/decisions/003-security-strategy.md](docs/decisions/003-security-strategy.md)
-JWT (planificado): [docs/decisions/004-jwt.md](docs/decisions/004-jwt.md)
+Estrategia de seguridad: [docs/decisions/003-security-strategy.md](docs/decisions/003-security-strategy.md) (Fase 0 completada)
+JWT: [docs/decisions/004-jwt.md](docs/decisions/004-jwt.md) (dependencia y config — Fase 0; lógica pendiente)
 
 ---
 
@@ -288,8 +293,45 @@ Decisión Flyway: [docs/decisions/002-flyway.md](docs/decisions/002-flyway.md)
 - Si cambia la arquitectura: actualiza la documentación.
 - Si cambian reglas de negocio: actualiza el Domain Model si es necesario.
 - Si se toman decisiones: crea o actualiza un ADR.
+- Si completas una tarea importante, una feature o un sprint: actualiza el [Development Log](docs/sessions/CHANGELOG.md).
 
 Al modificar un documento en `/docs`, tradúcelo al español si aún está en inglés.
+
+### Development Log
+
+El registro oficial de progreso del proyecto es [docs/sessions/CHANGELOG.md](docs/sessions/CHANGELOG.md).
+
+**Cuándo actualizarlo:**
+
+- Al completar un **sprint**.
+- Al completar una **feature** (según Definition of Done).
+- Al cerrar una **tarea importante** (decisiones de diseño aprobadas, migraciones relevantes, cambios de arquitectura, etc.).
+
+**Estructura obligatoria de cada entrada** (una sección por fecha):
+
+```
+## YYYY-MM-DD
+
+### Sprint
+<nombre del sprint>
+
+### Objetivo
+<qué se pretendía lograr>
+
+### Cambios realizados
+- <lista de cambios concretos>
+
+### Decisiones tomadas
+- <decisiones relevantes del periodo>
+
+### Estado del proyecto
+<estado actual con indicador ✅ / 🔄 / ⏳>
+
+### Próximo paso
+<siguiente acción planificada>
+```
+
+No duplicar información de ADRs o specs; el Development Log resume el *progreso*, no reemplaza la documentación técnica detallada.
 
 ---
 
@@ -315,6 +357,7 @@ Una feature solo está terminada si cumple **todos** estos criterios:
 - Logs adecuados.
 - Migración Flyway creada si aplica.
 - Documentación actualizada.
+- Development Log actualizado si aplica (feature, sprint o tarea importante completada).
 - Sin warnings.
 - Sigue las convenciones de este archivo.
 
@@ -352,7 +395,7 @@ Pregunta siempre antes de tomar decisiones arquitectónicas.
 | [docs/LANGUAGE_POLICY.md](docs/LANGUAGE_POLICY.md) | Política de idiomas |
 | [docs/decisions/](docs/decisions/) | Architecture Decision Records |
 | [docs/spec/](docs/spec/) | Especificaciones y tareas de features |
-| [docs/sessions/](docs/sessions/) | Notas de sesiones de desarrollo |
+| [docs/sessions/CHANGELOG.md](docs/sessions/CHANGELOG.md) | Development Log (sprints, features, tareas importantes) |
 
 ## Filosofía de revisión
 
@@ -382,3 +425,4 @@ Build Mode:
 - No asumas funcionalidades no implementadas.
 - Si existe documentación relacionada, consúltala antes de responder.
 - Cuando detectes una decisión arquitectónica relevante, propón crear o actualizar un ADR antes de implementarla.
+- Cuando completes una feature, sprint o tarea importante, actualiza [docs/sessions/CHANGELOG.md](docs/sessions/CHANGELOG.md).
