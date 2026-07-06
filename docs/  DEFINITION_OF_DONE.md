@@ -22,4 +22,4 @@ Una feature solo está terminada si:
 
 ✔ Sin warnings
 
-✔ Sigue AGENTS.md
+✔ Sigue [AGENTS.md](../AGENTS.md)
