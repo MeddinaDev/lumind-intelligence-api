@@ -142,3 +142,33 @@ Implementar la capa de persistencia de usuarios: migraciones Flyway, entidad JPA
 
 ### Próximo paso
 Fase 3 — `JwtProperties` y `JwtService`.
+
+---
+
+## 2026-07-09 — Fase 3
+
+### Sprint
+Sprint 2 - Authentication
+
+### Objetivo
+Implementar la infraestructura criptográfica de autenticación: configuración JWT tipada, servicio de emisión/validación de tokens, codificador de contraseñas BCrypt y utilidad SHA-256 para refresh tokens.
+
+### Cambios realizados
+- Creado `JwtProperties` (`@ConfigurationProperties`) con validación de secreto Base64 (≥ 256 bits decodificados).
+- Creado `JwtConfig` para registrar `JwtProperties`.
+- Creado `JwtService` en `auth/`: generación de access/refresh tokens (HS256, JJWT 0.13), validación diferenciada por claim `type`, extracción de `sub`.
+- Secreto JWT decodificado con `Decoders.BASE64.decode` antes de construir `SecretKey`.
+- Creado `PasswordEncoderConfig` con bean `BCryptPasswordEncoder` (strength 10).
+- Creado `Sha256Hasher` en `common/util/` para hash SHA-256 hex (64 caracteres) de refresh tokens.
+
+### Decisiones tomadas
+- `JWT_SECRET` almacenado como Base64 (`openssl rand -base64 32`); decodificación explícita en `JwtProperties` y `JwtService`.
+- Constantes privadas en `JwtService` para claims (`email`, `type`, `refresh`); sin magic strings.
+- `parseAndValidateRefreshToken()` incluido en Fase 3 para dejar `JwtService` completo antes de Fase 4–5.
+- `PasswordEncoderConfig` separado de `SecurityConfig` (sin modificar seguridad HTTP Basic).
+
+### Estado del proyecto
+🔄 Sprint 2 en curso — Fase 3 completada; pendiente Fase 4 (`RefreshToken`, repositorio, rotación).
+
+### Próximo paso
+Fase 4 — entidad `RefreshToken`, `RefreshTokenRepository` y lógica de rotación.
