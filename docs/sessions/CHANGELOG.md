@@ -377,4 +377,29 @@ Implementar la capa HTTP para Habit con endpoints REST protegidos por JWT.
 🔄 Sprint 3 en curso — Fase 11 (`HabitController`) completada; pendiente tests y manejo de `HabitNotFoundException`.
 
 ### Próximo paso
-Fase 12 — tests de `HabitService` e integración de endpoints habit (MockMvc).
+Fase 12 — manejo global de `HabitNotFoundException`.
+
+---
+
+## 2026-07-13 — Fase 12
+
+### Sprint
+Sprint 3 - Habits
+
+### Objetivo
+Integrar `HabitNotFoundException` en el manejo global de excepciones con respuesta HTTP 404.
+
+### Cambios realizados
+- Añadido handler `handleHabitNotFound` en `GlobalExceptionHandler`.
+- Respuesta `404 Not Found` con `ErrorResponse` estándar (`message`: "Habit not found").
+- Handler registrado antes del catch-all `Exception` para evitar respuestas `500`.
+
+### Decisiones tomadas
+- Mensaje genérico "Habit not found" (sin filtrar si el hábito no existe o pertenece a otro usuario).
+- Sin tests, sin cambios en `HabitService`, `HabitController`, `SecurityConfig`, `AuthService` ni entidades.
+
+### Estado del proyecto
+🔄 Sprint 3 en curso — Fase 12 (excepciones Habit) completada; pendiente tests.
+
+### Próximo paso
+Fase 13 — tests de `HabitService` e integración de endpoints habit (MockMvc).
