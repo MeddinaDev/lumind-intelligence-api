@@ -293,3 +293,32 @@ Implementar la batería inicial de tests del módulo de autenticación para cerr
 
 ### Próximo paso
 Sprint 3 — siguiente feature según roadmap (usuarios / hábitos).
+
+---
+
+## 2026-07-13 — Fase 9
+
+### Sprint
+Sprint 3 - Habits
+
+### Objetivo
+Implementar el modelo de dominio Habit (entidad, persistencia, DTOs y mapper) sin capa de servicio ni API.
+
+### Cambios realizados
+- Creada entidad `Habit` en `habit/entity/` con relación `@ManyToOne` a `User`, UUID, `createdAt` y `updatedAt`.
+- Creado `HabitRepository` (`JpaRepository<Habit, UUID>`).
+- Creada migración Flyway `V3__create_habits_table.sql` con FK a `users` y `ON DELETE CASCADE`.
+- Creados DTOs `CreateHabitRequest`, `UpdateHabitRequest` y `HabitResponse` con Bean Validation.
+- Creado `HabitMapper` (MapStruct): `toEntity`, `toResponse` y `updateEntity` con estrategia `IGNORE` para campos nulos.
+
+### Decisiones tomadas
+- Modelo mínimo: `name` (obligatorio, 100 chars) y `description` (opcional, 500 chars); sin streaks, estadísticas ni recordatorios.
+- `user_id` inmutable en entidad (`updatable = false`); asignación de usuario diferida a `HabitService`.
+- Sin `@Schema` en DTOs (OpenAPI fuera de alcance de esta fase).
+- Sin `HabitService`, `HabitController`, tests ni cambios de seguridad.
+
+### Estado del proyecto
+🔄 Sprint 3 en curso — Fase 9 (dominio Habit) completada; pendiente capa de servicio y API.
+
+### Próximo paso
+Fase 10 — `HabitService` y reglas de negocio CRUD.
