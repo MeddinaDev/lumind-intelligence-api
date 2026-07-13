@@ -403,3 +403,30 @@ Integrar `HabitNotFoundException` en el manejo global de excepciones con respues
 
 ### Próximo paso
 Fase 13 — tests de `HabitService` e integración de endpoints habit (MockMvc).
+
+---
+
+## 2026-07-13 — Fase 13
+
+### Sprint
+Sprint 3 - Habits
+
+### Objetivo
+Añadir cobertura de tests para el módulo Habit (servicio y controller).
+
+### Cambios realizados
+- Creada utilidad `HabitTestData` para datos de prueba reutilizables.
+- Tests unitarios `HabitServiceTest` (9): CRUD, aislamiento por usuario y `HabitNotFoundException`.
+- Tests de integración `HabitControllerIntegrationTest` (11): CRUD vía MockMvc, JWT Bearer, validación, 401/404 y aislamiento entre usuarios.
+- Reutilizados `application-test.yml`, H2 en memoria y patrón de `AuthTestData` / `AuthControllerIntegrationTest`.
+
+### Decisiones tomadas
+- Autenticación en integración mediante registro real + `accessToken` (sin modificar `SecurityConfig` ni `JwtService`).
+- Limpieza de BD en `@BeforeEach`: `habitRepository.deleteAll()` antes de `userRepository.deleteAll()`.
+- Sin cambios funcionales, refactors ni nuevas entidades.
+
+### Estado del proyecto
+✅ Sprint 3 completado — módulo Habit con dominio, servicio, API, excepciones y tests.
+
+### Próximo paso
+Sprint 4 — siguiente feature según roadmap (tareas / pomodoro).
