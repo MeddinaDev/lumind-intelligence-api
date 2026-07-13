@@ -202,3 +202,33 @@ Implementar persistencia y ciclo de vida de refresh tokens: entidad JPA, reposit
 
 ### Próximo paso
 Fase 5 — `AuthService` (registro, login, refresh).
+
+---
+
+## 2026-07-13 — Fase 5
+
+### Sprint
+Sprint 2 - Authentication
+
+### Objetivo
+Implementar la lógica de negocio de autenticación: registro con auto-login y login, delegando la emisión de tokens a `RefreshTokenService`.
+
+### Cambios realizados
+- Creados DTOs `RegisterRequest`, `LoginRequest` y `AuthResponse` en `auth/dto/`.
+- Creado `AuthMapper` (MapStruct) con mapeo `RegisterRequest` → `User` y `IssuedTokens` + `User` → `AuthResponse`.
+- Creado `AuthService` con `register()` (`@Transactional`) y `login()`.
+- Registro: unicidad de email, hash BCrypt, persistencia de usuario y emisión de tokens vía `RefreshTokenService.issueTokens()`.
+- Login: anti-enumeración (`InvalidCredentialsException` genérica), verificación de cuenta activa tras credenciales válidas, emisión de tokens.
+- Logging seguro: `INFO` en registro/login exitoso (`userId`); `WARN` en credenciales inválidas; sin passwords ni tokens.
+
+### Decisiones tomadas
+- Fase 5 limitada a `register()` y `login()`; `refresh()` diferido a fase posterior.
+- Sin normalización de email ni handler de `DataIntegrityViolationException` en esta fase.
+- Emisión de tokens delegada completamente a `RefreshTokenService`; `JwtService` usado solo para `expiresIn`.
+- Sin controllers, filtros, tests ni cambios en `SecurityConfig`.
+
+### Estado del proyecto
+🔄 Sprint 2 en curso — Fase 5 completada; pendiente Fase 6 (filtro JWT y `SecurityConfig`).
+
+### Próximo paso
+Fase 6 — `JwtAuthenticationFilter` y actualización de `SecurityConfig`.
