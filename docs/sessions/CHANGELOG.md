@@ -350,3 +350,31 @@ Implementar la capa de negocio para Habit con CRUD completo, filtrado por usuari
 
 ### Próximo paso
 Fase 11 — `HabitController` y endpoints REST.
+
+---
+
+## 2026-07-13 — Fase 11
+
+### Sprint
+Sprint 3 - Habits
+
+### Objetivo
+Implementar la capa HTTP para Habit con endpoints REST protegidos por JWT.
+
+### Cambios realizados
+- Creado `HabitController` en `habit/` con CRUD completo bajo `/api/v1/habits`.
+- Usuario autenticado obtenido vía `@AuthenticationPrincipal AuthenticatedUser`; sin `userId` en path, query ni body.
+- Endpoints documentados con `@Tag`, `@Operation`, `@ApiResponses` y `@SecurityRequirement(name = "bearerAuth")`.
+- Validación de entrada con `@Valid` en `CreateHabitRequest` y `UpdateHabitRequest`.
+- Respuestas HTTP: `200` (GET, PATCH), `201` (POST), `204` (DELETE).
+
+### Decisiones tomadas
+- Delegación total de lógica en `HabitService`; controller delgado sin reglas de negocio.
+- Sin tests, sin cambios en `JwtService`, `SecurityConfig`, `AuthService` ni `GlobalExceptionHandler`.
+- Sin `@Schema` en DTOs de habit (fuera de alcance).
+
+### Estado del proyecto
+🔄 Sprint 3 en curso — Fase 11 (`HabitController`) completada; pendiente tests y manejo de `HabitNotFoundException`.
+
+### Próximo paso
+Fase 12 — tests de `HabitService` e integración de endpoints habit (MockMvc).
