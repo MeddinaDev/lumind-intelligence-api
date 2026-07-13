@@ -172,3 +172,33 @@ Implementar la infraestructura criptográfica de autenticación: configuración 
 
 ### Próximo paso
 Fase 4 — entidad `RefreshToken`, `RefreshTokenRepository` y lógica de rotación.
+
+---
+
+## 2026-07-09 — Fase 4
+
+### Sprint
+Sprint 2 - Authentication
+
+### Objetivo
+Implementar persistencia y ciclo de vida de refresh tokens: entidad JPA, repositorio, emisión hasheada y rotación transaccional.
+
+### Cambios realizados
+- Creada entidad `RefreshToken` en `auth/entity/` con relación `@ManyToOne` unidireccional a `User`.
+- Creado `RefreshTokenRepository` con `findByToken` (búsqueda por hash SHA-256).
+- Creado record `IssuedTokens` (`accessToken`, `refreshToken`) en `auth/model/`.
+- Creado `RefreshTokenService` con `issueTokens()` y `rotate()`; hash SHA-256 del JWT completo antes de persistir.
+- Rotación transaccional (`@Transactional` en `rotate()`): revocación del token anterior y persistencia del nuevo en la misma transacción (rollback si falla el guardado del nuevo token).
+- Detección de reutilización de token revocado con log `WARN` y `user_id`.
+- Verificación de `user.enabled` en `rotate()`; cuenta deshabilitada lanza `AccountDisabledException`.
+
+### Decisiones tomadas
+- `IssuedTokens` sin entidad `User`; el caller (Fase 5 `AuthService`) resuelve el usuario si lo necesita para el DTO de respuesta.
+- `expires_at` en BD alineado con el claim `exp` del JWT al persistir.
+- Sin actualización de AGENTS.md, README ni SPEC en esta fase (cierre documental al finalizar Sprint 2).
+
+### Estado del proyecto
+🔄 Sprint 2 en curso — Fase 4 completada; pendiente Fase 5 (`AuthService`).
+
+### Próximo paso
+Fase 5 — `AuthService` (registro, login, refresh).

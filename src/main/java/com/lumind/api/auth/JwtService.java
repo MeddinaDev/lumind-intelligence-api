@@ -7,6 +7,7 @@ import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -105,7 +106,7 @@ public class JwtService {
     /**
      * Extracts the user UUID from the {@code sub} claim.
      */
-    public UUID extractUserId(Claims claims) {
+    public @NonNull UUID extractUserId(@NonNull Claims claims) {
         return UUID.fromString(claims.getSubject());
     }
 
