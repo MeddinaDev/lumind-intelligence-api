@@ -232,3 +232,34 @@ Implementar la lógica de negocio de autenticación: registro con auto-login y l
 
 ### Próximo paso
 Fase 6 — `JwtAuthenticationFilter` y actualización de `SecurityConfig`.
+
+---
+
+## 2026-07-13 — Fase 7
+
+### Sprint
+Sprint 2 - Authentication
+
+### Objetivo
+Exponer la autenticación por HTTP: `AuthController` con endpoints register, login y refresh, documentación OpenAPI con Bearer JWT y validación Bean Validation.
+
+### Cambios realizados
+- Creado `AuthController` en `auth/` con `POST /api/v1/auth/register`, `/login` y `/refresh`.
+- Creado `RefreshTokenRequest` con validación `@NotBlank` y anotaciones `@Schema`.
+- Implementado `AuthService.refresh()` delegando en `RefreshTokenService.rotate()` y reutilizando `AuthMapper`.
+- Actualizado `OpenApiConfig` con esquema `bearerAuth` (HTTP Bearer JWT) y `SecurityRequirement` global.
+- Documentados con `@Schema` los DTOs `RegisterRequest`, `LoginRequest`, `RefreshTokenRequest`, `AuthResponse` y `UserSummaryResponse`.
+- Endpoints públicos de auth marcados con `@SecurityRequirements()` para Swagger.
+
+### Decisiones tomadas
+- `AuthService.refresh()` incluido en Fase 7 como cierre del gap diferido en Fase 5.
+- `AccountDisabledException` en refresh mantiene HTTP `403` (sin modificar `RefreshTokenService`).
+- Respuestas HTTP mediante `ResponseEntity<AuthResponse>`: `201` (register), `200` (login, refresh).
+- Sin tests, sin cambios en `JwtService`, `RefreshTokenService`, `SecurityConfig` ni entidades.
+- Sin actualización de AGENTS.md, README.md ni SPECIFICATION.md en esta fase.
+
+### Estado del proyecto
+🔄 Sprint 2 en curso — Fase 7 completada; pendiente Fase 8 (tests).
+
+### Próximo paso
+Fase 8 — tests unitarios de `AuthService` e integración de endpoints auth (MockMvc).
