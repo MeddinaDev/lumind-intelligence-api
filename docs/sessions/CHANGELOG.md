@@ -322,3 +322,31 @@ Implementar el modelo de dominio Habit (entidad, persistencia, DTOs y mapper) si
 
 ### Próximo paso
 Fase 10 — `HabitService` y reglas de negocio CRUD.
+
+---
+
+## 2026-07-13 — Fase 10
+
+### Sprint
+Sprint 3 - Habits
+
+### Objetivo
+Implementar la capa de negocio para Habit con CRUD completo, filtrado por usuario y excepción de dominio.
+
+### Cambios realizados
+- Creado `HabitService` con operaciones create, getById, getAllByUserId, update y delete.
+- Creada `HabitNotFoundException` en `habit/exception/`.
+- Ampliado `HabitRepository` con `findByIdAndUser_Id` y `findAllByUser_Id`.
+- Todas las consultas filtran por `userId`; acceso mediante `findById()` aislado prohibido.
+- Asignación de usuario en create mediante `UserRepository.getReferenceById`.
+- Uso de `HabitMapper` para conversión entidad ↔ DTO.
+
+### Decisiones tomadas
+- Hábito inexistente o ajeno al usuario autenticado → `HabitNotFoundException` (sin filtrar información).
+- Sin `HabitController`, tests, cambios de seguridad ni OpenAPI (fuera de alcance).
+
+### Estado del proyecto
+🔄 Sprint 3 en curso — Fase 10 (`HabitService`) completada; pendiente capa API.
+
+### Próximo paso
+Fase 11 — `HabitController` y endpoints REST.
