@@ -263,3 +263,33 @@ Exponer la autenticación por HTTP: `AuthController` con endpoints register, log
 
 ### Próximo paso
 Fase 8 — tests unitarios de `AuthService` e integración de endpoints auth (MockMvc).
+
+---
+
+## 2026-07-13 — Fase 8
+
+### Sprint
+Sprint 2 - Authentication
+
+### Objetivo
+Implementar la batería inicial de tests del módulo de autenticación para cerrar Sprint 2 con cobertura alta de las reglas de negocio.
+
+### Cambios realizados
+- Añadida dependencia H2 (test scope) y plugin JaCoCo 0.8.14 en `pom.xml`.
+- Creado perfil `application-test.yml` con H2 en memoria, Flyway deshabilitado y JWT de test.
+- Creada utilidad compartida `AuthTestData` para datos de prueba reutilizables.
+- Tests unitarios: `AuthServiceTest` (11), `JwtServiceTest` (11), `RefreshTokenServiceTest` (9).
+- Tests de integración MockMvc: `AuthControllerIntegrationTest` (9) sobre `POST /register`, `/login` y `/refresh`.
+- Cobertura JaCoCo del paquete `com.lumind.api.auth` (servicios + controller): 100 % instrucciones.
+
+### Decisiones tomadas
+- Integración con `@SpringBootTest` + H2 en memoria; sin Testcontainers ni cambios en producción.
+- `extractTokenId()` no existe en `JwtService`; cobertura del `jti` verificada vía claim `id` en refresh tokens.
+- Sin tests de `JwtAuthenticationFilter` ni `SecurityConfig` (fuera de alcance de Fase 8).
+- Sin cambios en lógica de negocio, entidades, DTOs, AGENTS, README ni SPEC.
+
+### Estado del proyecto
+✅ Sprint 2 completado — módulo auth con tests y cobertura de reglas de negocio.
+
+### Próximo paso
+Sprint 3 — siguiente feature según roadmap (usuarios / hábitos).
