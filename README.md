@@ -2,7 +2,8 @@
 
 Backend Spring Boot del proyecto Lumind. Repositorio en fase de configuración inicial: aplicación ejecutable, seguridad, documentación OpenAPI y estructura de paquetes por features.
 
-> README provisional. Se ampliará en Sprint 9 para la versión pública definitiva.
+> Actualmente se encuentra en desarrollo activo. Ya incluye autenticación completa mediante JWT, gestión de hábitos, documentación OpenAPI, migraciones con Flyway y una arquitectura modular organizada por features.
+
 
 ## Estado del repositorio
 
@@ -33,6 +34,24 @@ Backend Spring Boot del proyecto Lumind. Repositorio en fase de configuración i
 - Java 21
 - Maven 3.9+
 - PostgreSQL 16+
+
+## Roadmap
+
+✅ Authentication
+
+✅ JWT Security
+
+✅ Habit CRUD
+
+🚧 Tasks
+
+🚧 Pomodoro
+
+🚧 Statistics
+
+🚧 AI Assistant
+
+🚧 Notifications
 
 ## Configuración
 
@@ -88,7 +107,7 @@ El resto de rutas requieren autenticación HTTP Basic.
 ```
 src/main/java/com/lumind/api/
 ├── config/          # Security, OpenAPI
-├── auth/            # (preparado)
+├── auth/            
 ├── user/            # User, UserRepository, UserSummaryResponse, UserMapper
 ├── habit/
 ├── task/
