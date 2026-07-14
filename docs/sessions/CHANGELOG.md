@@ -430,3 +430,32 @@ Añadir cobertura de tests para el módulo Habit (servicio y controller).
 
 ### Próximo paso
 Sprint 4 — siguiente feature según roadmap (tareas / pomodoro).
+
+---
+
+## 2026-07-14 — Fase 14
+
+### Sprint
+Sprint 4 - Tasks
+
+### Objetivo
+Implementar el modelo de dominio Task (entidad, persistencia, DTOs y mapper) sin capa de servicio ni API.
+
+### Cambios realizados
+- Creada entidad `Task` en `task/entity/` con relación `@ManyToOne` a `User`, UUID, `title`, `description`, `completed`, `createdAt` y `updatedAt`.
+- Creado `TaskRepository` (`JpaRepository<Task, UUID>`).
+- Creada migración Flyway `V4__create_tasks_table.sql` con FK a `users` y `ON DELETE CASCADE`.
+- Creados DTOs `CreateTaskRequest`, `UpdateTaskRequest` y `TaskResponse` con Bean Validation.
+- Creado `TaskMapper` (MapStruct): `toEntity`, `toResponse` y `updateEntity` con estrategia `IGNORE` para campos nulos.
+
+### Decisiones tomadas
+- Modelo mínimo: `title` (obligatorio, 100 chars), `description` (opcional, 500 chars) y `completed` (boolean, default `false` en creación).
+- `user_id` inmutable en entidad (`updatable = false`); asignación de usuario diferida a `TaskService`.
+- Sin `@Schema` en DTOs (OpenAPI fuera de alcance de esta fase).
+- Sin `TaskService`, `TaskController`, tests ni cambios de seguridad.
+
+### Estado del proyecto
+🔄 Sprint 4 en curso — Fase 14 (dominio Task) completada; pendiente capa de servicio y API.
+
+### Próximo paso
+Fase 15 — `TaskService` y reglas de negocio CRUD.
