@@ -1,6 +1,7 @@
 package com.lumind.api.common.exception;
 
 import com.lumind.api.habit.exception.HabitNotFoundException;
+import com.lumind.api.task.exception.TaskNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ public class GlobalExceptionHandler {
     private static final String MSG_ACCOUNT_DISABLED = "Account is disabled";
     private static final String MSG_INVALID_REFRESH_TOKEN = "Invalid or expired refresh token";
     private static final String MSG_HABIT_NOT_FOUND = "Habit not found";
+    private static final String MSG_TASK_NOT_FOUND = "Task not found";
     private static final String MSG_UNEXPECTED_ERROR = "An unexpected error occurred";
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -96,6 +98,16 @@ public class GlobalExceptionHandler {
         log.debug("Habit not found for path: {}", request.getRequestURI());
 
         return buildResponse(HttpStatus.NOT_FOUND, MSG_HABIT_NOT_FOUND, request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(TaskNotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleTaskNotFound(
+            TaskNotFoundException ex,
+            HttpServletRequest request
+    ) {
+        log.debug("Task not found for path: {}", request.getRequestURI());
+
+        return buildResponse(HttpStatus.NOT_FOUND, MSG_TASK_NOT_FOUND, request.getRequestURI(), null);
     }
 
     @ExceptionHandler(Exception.class)

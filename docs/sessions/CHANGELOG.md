@@ -515,3 +515,28 @@ Implementar la capa HTTP para Task con endpoints REST protegidos por JWT.
 
 ### Próximo paso
 Fase 17 — manejo global de `TaskNotFoundException`.
+
+---
+
+## 2026-07-14 — Fase 17
+
+### Sprint
+Sprint 4 - Tasks
+
+### Objetivo
+Integrar `TaskNotFoundException` en el manejo global de excepciones con respuesta HTTP 404.
+
+### Cambios realizados
+- Añadido handler `handleTaskNotFound` en `GlobalExceptionHandler`.
+- Respuesta `404 Not Found` con `ErrorResponse` estándar (`message`: "Task not found").
+- Handler registrado antes del catch-all `Exception` para evitar respuestas `500`.
+
+### Decisiones tomadas
+- Mensaje genérico "Task not found" (sin filtrar si la tarea no existe o pertenece a otro usuario).
+- Sin tests, sin cambios en `TaskService`, `TaskController`, `SecurityConfig`, `AuthService` ni entidades.
+
+### Estado del proyecto
+🔄 Sprint 4 en curso — Fase 17 (excepciones Task) completada; pendiente tests.
+
+### Próximo paso
+Fase 18 — tests de `TaskService` e integración de endpoints task (MockMvc).
