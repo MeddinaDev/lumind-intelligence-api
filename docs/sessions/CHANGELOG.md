@@ -540,3 +540,30 @@ Integrar `TaskNotFoundException` en el manejo global de excepciones con respuest
 
 ### Próximo paso
 Fase 18 — tests de `TaskService` e integración de endpoints task (MockMvc).
+
+---
+
+## 2026-07-14 — Fase 18
+
+### Sprint
+Sprint 4 - Tasks
+
+### Objetivo
+Añadir cobertura de tests para el módulo Task (servicio y controller).
+
+### Cambios realizados
+- Creada utilidad `TaskTestData` para datos de prueba reutilizables.
+- Tests unitarios `TaskServiceTest` (9): CRUD, aislamiento por usuario y `TaskNotFoundException`.
+- Tests de integración `TaskControllerIntegrationTest` (11): CRUD vía MockMvc, JWT Bearer, validación, 401/404 y aislamiento entre usuarios.
+- Reutilizados `application-test.yml`, H2 en memoria y patrón de `AuthTestData` / `AuthControllerIntegrationTest`.
+
+### Decisiones tomadas
+- Autenticación en integración mediante registro real + `accessToken` (sin modificar `SecurityConfig` ni `JwtService`).
+- Limpieza de BD en `@BeforeEach`: `taskRepository.deleteAll()` antes de `userRepository.deleteAll()`.
+- Sin cambios funcionales, refactors ni nuevas entidades.
+
+### Estado del proyecto
+✅ Sprint 4 completado — módulo Task con dominio, servicio, API, excepciones y tests.
+
+### Próximo paso
+Sprint 5 — siguiente feature según roadmap (pomodoro / estadísticas).
