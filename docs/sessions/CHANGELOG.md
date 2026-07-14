@@ -567,3 +567,91 @@ Añadir cobertura de tests para el módulo Task (servicio y controller).
 
 ### Próximo paso
 Sprint 5 — siguiente feature según roadmap (pomodoro / estadísticas).
+
+---
+
+## 2026-07-14 — Fase 19
+
+### Sprint
+Sprint 5 - Pomodoro
+
+### Objetivo
+Implementar el modelo de dominio Pomodoro (entidad, persistencia, DTOs y mapper) sin capa de servicio ni API.
+
+### Cambios realizados
+- Creada entidad `PomodoroSession` en `pomodoro/entity/` con relación `@ManyToOne` a `User`, UUID, `durationMinutes`, `completedMinutes`, `completed`, `startedAt`, `finishedAt`, `createdAt` y `updatedAt`.
+- Creado `PomodoroSessionRepository` (`JpaRepository<PomodoroSession, UUID>`) con `findByIdAndUser_Id` y `findAllByUser_Id`.
+- Creada migración Flyway `V5__create_pomodoro_sessions_table.sql` con FK a `users` y `ON DELETE CASCADE`.
+- Creados DTOs `CreatePomodoroSessionRequest`, `UpdatePomodoroSessionRequest` y `PomodoroSessionResponse` con Bean Validation.
+- Creado `PomodoroSessionMapper` (MapStruct): `toEntity`, `toResponse` y `updateEntity` con estrategia `IGNORE` para campos nulos.
+
+### Decisiones tomadas
+- Modelo de sesión: `durationMinutes` (obligatorio, 1–180), `startedAt` (obligatorio), `completedMinutes` (default `0`), `completed` (default `false`) y `finishedAt` (opcional).
+- Timestamps de sesión y auditoría con `LocalDateTime` y columna `TIMESTAMP` (Habit/Task usan `Instant`/`TIMESTAMPTZ`).
+- `user_id` inmutable en entidad (`updatable = false`); asignación de usuario diferida a `PomodoroSessionService`.
+- Sin `@Schema` en DTOs (OpenAPI fuera de alcance de esta fase).
+- Sin `PomodoroSessionService`, `PomodoroSessionController`, tests ni cambios de seguridad.
+
+### Estado del proyecto
+🔄 Sprint 5 en curso — Fase 19 (dominio Pomodoro) completada; pendiente capa de servicio y API.
+
+### Próximo paso
+Fase 20 — `PomodoroSessionService` y reglas de negocio CRUD.
+
+---
+
+## 2026-07-14 — Fase 20
+
+### Sprint
+Sprint 5 - Pomodoro
+
+### Objetivo
+Implementar la capa de negocio para PomodoroSession con CRUD completo, filtrado por usuario y excepción de dominio.
+
+### Cambios realizados
+- Creado `PomodoroSessionService` con operaciones create, getById, getAllByUserId, update y delete.
+- Creada `PomodoroSessionNotFoundException` en `pomodoro/exception/`.
+- `PomodoroSessionRepository` ya incluía `findByIdAndUser_Id` y `findAllByUser_Id` (Fase 19).
+- Todas las consultas filtran por `userId`; acceso mediante `findById()` aislado prohibido.
+- Asignación de usuario en create mediante `UserRepository.getReferenceById`.
+- Uso de `PomodoroSessionMapper` para conversión entidad ↔ DTO.
+- Logs INFO en create, update y delete.
+
+### Decisiones tomadas
+- Sesión inexistente o ajena al usuario autenticado → `PomodoroSessionNotFoundException` (sin filtrar información).
+- Sin logs DEBUG en búsquedas (mismo patrón que `HabitService` y `TaskService`).
+- Sin `PomodoroSessionController`, tests, cambios de seguridad ni OpenAPI (fuera de alcance).
+
+### Estado del proyecto
+🔄 Sprint 5 en curso — Fase 20 (`PomodoroSessionService`) completada; pendiente capa API.
+
+### Próximo paso
+Fase 21 — `PomodoroSessionController` y endpoints REST.
+
+---
+
+## 2026-07-14 — Fase 21
+
+### Sprint
+Sprint 5 - Pomodoro
+
+### Objetivo
+Implementar la capa HTTP para PomodoroSession con endpoints REST protegidos por JWT.
+
+### Cambios realizados
+- Creado `PomodoroSessionController` en `pomodoro/` con CRUD completo bajo `/api/v1/pomodoro-sessions`.
+- Usuario autenticado obtenido vía `@AuthenticationPrincipal AuthenticatedUser`; sin `userId` en path, query ni body.
+- Endpoints documentados con `@Tag`, `@Operation`, `@ApiResponses` y `@SecurityRequirement(name = "bearerAuth")`.
+- Validación de entrada con `@Valid` en `CreatePomodoroSessionRequest` y `UpdatePomodoroSessionRequest`.
+- Respuestas HTTP: `200` (GET, PATCH), `201` (POST), `204` (DELETE).
+
+### Decisiones tomadas
+- Delegación total de lógica en `PomodoroSessionService`; controller delgado sin reglas de negocio.
+- Sin tests, sin cambios en `JwtService`, `SecurityConfig`, `AuthService` ni `GlobalExceptionHandler`.
+- Sin `@Schema` en DTOs de pomodoro (fuera de alcance).
+
+### Estado del proyecto
+🔄 Sprint 5 en curso — Fase 21 (`PomodoroSessionController`) completada; pendiente manejo de `PomodoroSessionNotFoundException` y tests.
+
+### Próximo paso
+Fase 22 — manejo global de `PomodoroSessionNotFoundException`.
