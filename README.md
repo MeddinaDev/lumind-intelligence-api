@@ -1,8 +1,39 @@
 # Lumind Intelligence API
 
-Backend Spring Boot del proyecto Lumind. Repositorio en fase de configuración inicial: aplicación ejecutable, seguridad, documentación OpenAPI y estructura de paquetes por features.
+> Backend REST desarrollado con Spring Boot 3.5 para la plataforma de productividad Lumind.
+
+> El proyecto implementa una arquitectura modular basada en features, autenticación JWT, migraciones con Flyway, documentación OpenAPI y una batería de tests automatizados con cobertura superior al 90%.
 
 > Actualmente se encuentra en desarrollo activo. Ya incluye autenticación completa mediante JWT, gestión de hábitos, documentación OpenAPI, migraciones con Flyway y una arquitectura modular organizada por features.
+
+
+
+## Características
+
+- JWT Authentication
+
+- Refresh Tokens
+
+- Habit CRUD
+
+- Task CRUD
+
+- Swagger / OpenAPI
+
+- Flyway
+
+- Bean Validation
+
+- MapStruct
+
+- Arquitectura Feature Based
+
+- Tests unitarios
+
+- Tests de integración
+
+- JaCoCo
+
 
 
 ## Estado del repositorio
@@ -14,8 +45,17 @@ Backend Spring Boot del proyecto Lumind. Repositorio en fase de configuración i
 | Spring Security | HTTP Basic; rutas públicas en Swagger y Actuator; JWT: dependencia y config (Fase 0), lógica pendiente |
 | Feature `user` | Entidad `User`, `UserRepository`, `UserSummaryResponse`, `UserMapper` (Fase 2) |
 | OpenAPI / Swagger UI | Configurado (sin operaciones de API) |
-| Endpoints REST de negocio | No implementados |
-| Tests | No implementados |
+
+| Feature        | Estado |
+| -------------- | ------ |
+| Authentication | ✅     |
+| JWT Security   | ✅     |
+| Habits         | ✅     |
+| Tasks          | ✅     |
+| Pomodoro       | 🚧     |
+| Statistics     | 🚧     |
+| AI             | 🚧     |
+
 
 ## Stack
 
@@ -43,7 +83,7 @@ Backend Spring Boot del proyecto Lumind. Repositorio en fase de configuración i
 
 ✅ Habit CRUD
 
-🚧 Tasks
+✅ Tasks
 
 🚧 Pomodoro
 
@@ -52,6 +92,33 @@ Backend Spring Boot del proyecto Lumind. Repositorio en fase de configuración i
 🚧 AI Assistant
 
 🚧 Notifications
+
+
+## Calidad
+Java 21
+
+Arquitectura Feature-Based
+
+JWT
+
+Clean Code
+
+SOLID
+
+MapStruct
+
+Bean Validation
+
+JUnit 5
+
+Mockito
+
+MockMvc
+
+JaCoCo
+
+93% cobertura
+
 
 ## Configuración
 
