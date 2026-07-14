@@ -487,3 +487,31 @@ Implementar la capa de negocio para Task con CRUD completo, filtrado por usuario
 
 ### Próximo paso
 Fase 16 — `TaskController` y endpoints REST.
+
+---
+
+## 2026-07-14 — Fase 16
+
+### Sprint
+Sprint 4 - Tasks
+
+### Objetivo
+Implementar la capa HTTP para Task con endpoints REST protegidos por JWT.
+
+### Cambios realizados
+- Creado `TaskController` en `task/` con CRUD completo bajo `/api/v1/tasks`.
+- Usuario autenticado obtenido vía `@AuthenticationPrincipal AuthenticatedUser`; sin `userId` en path, query ni body.
+- Endpoints documentados con `@Tag`, `@Operation`, `@ApiResponses` y `@SecurityRequirement(name = "bearerAuth")`.
+- Validación de entrada con `@Valid` en `CreateTaskRequest` y `UpdateTaskRequest`.
+- Respuestas HTTP: `200` (GET, PATCH), `201` (POST), `204` (DELETE).
+
+### Decisiones tomadas
+- Delegación total de lógica en `TaskService`; controller delgado sin reglas de negocio.
+- Sin tests, sin cambios en `JwtService`, `SecurityConfig`, `AuthService` ni `GlobalExceptionHandler`.
+- Sin `@Schema` en DTOs de task (fuera de alcance).
+
+### Estado del proyecto
+🔄 Sprint 4 en curso — Fase 16 (`TaskController`) completada; pendiente manejo de `TaskNotFoundException` y tests.
+
+### Próximo paso
+Fase 17 — manejo global de `TaskNotFoundException`.
