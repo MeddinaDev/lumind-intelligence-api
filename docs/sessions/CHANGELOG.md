@@ -459,3 +459,31 @@ Implementar el modelo de dominio Task (entidad, persistencia, DTOs y mapper) sin
 
 ### Próximo paso
 Fase 15 — `TaskService` y reglas de negocio CRUD.
+
+---
+
+## 2026-07-14 — Fase 15
+
+### Sprint
+Sprint 4 - Tasks
+
+### Objetivo
+Implementar la capa de negocio para Task con CRUD completo, filtrado por usuario y excepción de dominio.
+
+### Cambios realizados
+- Creado `TaskService` con operaciones create, getById, getAllByUserId, update y delete.
+- Creada `TaskNotFoundException` en `task/exception/`.
+- `TaskRepository` ya incluía `findByIdAndUser_Id` y `findAllByUser_Id` (Fase 14).
+- Todas las consultas filtran por `userId`; acceso mediante `findById()` aislado prohibido.
+- Asignación de usuario en create mediante `UserRepository.getReferenceById`.
+- Uso de `TaskMapper` para conversión entidad ↔ DTO.
+
+### Decisiones tomadas
+- Tarea inexistente o ajena al usuario autenticado → `TaskNotFoundException` (sin filtrar información).
+- Sin `TaskController`, tests, cambios de seguridad ni OpenAPI (fuera de alcance).
+
+### Estado del proyecto
+🔄 Sprint 4 en curso — Fase 15 (`TaskService`) completada; pendiente capa API.
+
+### Próximo paso
+Fase 16 — `TaskController` y endpoints REST.
