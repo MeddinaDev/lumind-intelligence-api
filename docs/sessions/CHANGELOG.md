@@ -655,3 +655,28 @@ Implementar la capa HTTP para PomodoroSession con endpoints REST protegidos por 
 
 ### Próximo paso
 Fase 22 — manejo global de `PomodoroSessionNotFoundException`.
+
+---
+
+## 2026-07-14 — Fase 22
+
+### Sprint
+Sprint 5 - Pomodoro
+
+### Objetivo
+Integrar `PomodoroSessionNotFoundException` en el manejo global de excepciones con respuesta HTTP 404.
+
+### Cambios realizados
+- Añadido handler `handlePomodoroSessionNotFound` en `GlobalExceptionHandler`.
+- Respuesta `404 Not Found` con `ErrorResponse` estándar (`message`: "Pomodoro session not found").
+- Handler registrado antes del catch-all `Exception` para evitar respuestas `500`.
+
+### Decisiones tomadas
+- Mensaje genérico "Pomodoro session not found" (sin filtrar si la sesión no existe o pertenece a otro usuario).
+- Sin tests, sin cambios en `PomodoroSessionService`, `PomodoroSessionController`, `SecurityConfig`, `AuthService` ni entidades.
+
+### Estado del proyecto
+🔄 Sprint 5 en curso — Fase 22 (excepciones Pomodoro) completada; pendiente tests.
+
+### Próximo paso
+Fase 23 — tests de `PomodoroSessionService` e integración de endpoints pomodoro (MockMvc).
