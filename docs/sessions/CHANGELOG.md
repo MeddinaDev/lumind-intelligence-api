@@ -958,3 +958,31 @@ Diseñar la arquitectura completa del módulo AI Productivity Analysis antes de 
 
 ### Próximo paso
 Fase 33 — configuración Gemini, `AiLanguageModelClient` y `GeminiClient`.
+
+---
+
+## 2026-07-26 — Fase 33
+
+### Sprint
+Sprint 7 - Artificial Intelligence
+
+### Objetivo
+Implementar la infraestructura de integración con Gemini (interfaz agnóstica, propiedades, configuración y cliente stub) sin lógica de negocio ni endpoints.
+
+### Cambios realizados
+- Creada interfaz `AiLanguageModelClient` con operación `generateCompletion`.
+- Creados `GeminiProperties` (`lumind.ai.gemini.*`) y `GeminiConfig` con beans `RestClient` y `AiLanguageModelClient`.
+- Creado `GeminiClient` (stub temporal) con estructura preparada para la llamada HTTP real.
+- Añadidas propiedades Gemini en `application.yml` y `application-test.yml`.
+
+### Decisiones tomadas
+- Sin nuevas dependencias Maven: `RestClient` de `spring-boot-starter-web` suficiente para la integración HTTP futura.
+- `GeminiClient` registrado como bean vía `GeminiConfig`; inyección por constructor.
+- `apiKey` opcional en desarrollo (`${GEMINI_API_KEY:}`); validación de producción diferida a fase de excepciones IA.
+- Stub devuelve texto JSON crudo; parseo de negocio fuera de alcance (Fase posterior).
+
+### Estado del proyecto
+🔄 Sprint 7 en curso — Fase 33 (infraestructura Gemini) completada; pendiente PromptBuilder y Service.
+
+### Próximo paso
+Fase 34 — `ProductivityAnalysisPromptInput`, `ProductivityAnalysisPromptBuilder` y `ProductivityAnalysisService`.

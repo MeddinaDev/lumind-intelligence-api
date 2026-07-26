@@ -22,3 +22,11 @@ jwt:
   issuer: lumind-intelligence-api-test
   access-token-expiration: 900
   refresh-token-expiration: 604800
+
+lumind:
+  ai:
+    gemini:
+      api-key: test-gemini-api-key
+      model: gemini-2.0-flash
+      timeout: 5s
+      temperature: 0.4
