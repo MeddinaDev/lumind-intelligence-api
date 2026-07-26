@@ -680,3 +680,60 @@ Integrar `PomodoroSessionNotFoundException` en el manejo global de excepciones c
 
 ### Próximo paso
 Fase 23 — tests de `PomodoroSessionService` e integración de endpoints pomodoro (MockMvc).
+
+---
+
+## 2026-07-14 — Fase 23
+
+### Sprint
+Sprint 5 - Pomodoro
+
+### Objetivo
+Añadir cobertura de tests para el módulo Pomodoro (servicio y controller).
+
+### Cambios realizados
+- Creada utilidad `PomodoroSessionTestData` para datos de prueba reutilizables.
+- Tests unitarios `PomodoroSessionServiceTest` (9): CRUD, aislamiento por usuario y `PomodoroSessionNotFoundException`.
+- Tests de integración `PomodoroSessionControllerIntegrationTest` (11): CRUD vía MockMvc, JWT Bearer, validación, 401/404 y aislamiento entre usuarios.
+- Reutilizados `application-test.yml`, H2 en memoria y patrón de `AuthTestData` / `AuthControllerIntegrationTest`.
+
+### Decisiones tomadas
+- Autenticación en integración mediante registro real + `accessToken` (sin modificar `SecurityConfig` ni `JwtService`).
+- Limpieza de BD en `@BeforeEach`: `pomodoroSessionRepository.deleteAll()` antes de `userRepository.deleteAll()`.
+- Sin cambios funcionales, refactors ni nuevas entidades.
+
+### Estado del proyecto
+✅ Sprint 5 completado — módulo Pomodoro con dominio, servicio, API, excepciones y tests.
+
+### Próximo paso
+Fase 24 — cierre de producción del módulo Pomodoro (verificación, cobertura JaCoCo y revisión técnica).
+
+---
+
+## 2026-07-26 — Fase 24
+
+### Sprint
+Sprint 5 - Pomodoro
+
+### Objetivo
+Cerrar el Sprint Pomodoro dejando el módulo listo para producción: verificación del proyecto, análisis de cobertura JaCoCo, revisión técnica y comprobación de consistencia con los módulos Auth, Habit y Task.
+
+### Cambios realizados
+- Verificación con `mvn clean verify`: compilación correcta; tests unitarios del módulo Pomodoro (9/9) pasan sin tests ignorados; 11 tests de integración REST implementados.
+- Análisis JaCoCo del paquete `com.lumind.api.pomodoro`: servicio al 100 %; cobertura de controller, mapper y entidad dependiente de tests de integración (11 escenarios implementados).
+- Revisión técnica del módulo: sin código duplicado, imports sin usar ni métodos muertos detectados.
+- Ajuste de `PomodoroSessionResponse` para usar `Instant` (alineado con entidad y módulos Habit/Task).
+- Ajuste menor de estilo en entidad `PomodoroSession` (orden de imports).
+- Alineación de `PomodoroSessionTestData` / `PomodoroSessionServiceTest` con el patrón de `HabitTestData` / `HabitServiceTest` (`AuthTestData.activeUser()`).
+- Eliminado método de test sin uso `sampleUser(String email)`.
+
+### Decisiones tomadas
+- Sin nuevas funcionalidades ni cambios de comportamiento funcional.
+- Sin tests artificiales para inflar cobertura; los tests de integración existentes cubren el comportamiento público REST pendiente de ejecución en CI.
+- Sin modificaciones fuera de `docs/sessions/CHANGELOG.md` en documentación.
+
+### Estado del proyecto
+✅ Sprint 5 (Pomodoro) finalizado — módulo listo para producción.
+
+### Próximo paso
+Sprint 6 — Fase 6: Productivity Statistics.

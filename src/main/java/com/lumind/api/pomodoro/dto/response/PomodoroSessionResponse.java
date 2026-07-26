@@ -1,6 +1,6 @@
 package com.lumind.api.pomodoro.dto.response;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.UUID;
 
 public record PomodoroSessionResponse(
@@ -9,10 +9,9 @@ public record PomodoroSessionResponse(
         Integer durationMinutes,
         Integer completedMinutes,
         Boolean completed,
-        LocalDateTime startedAt,
-        LocalDateTime finishedAt,
-        LocalDateTime createdAt,
-        LocalDateTime updatedAt
-        
+        Instant startedAt,
+        Instant finishedAt,
+        Instant createdAt,
+        Instant updatedAt
 ) {
 }
