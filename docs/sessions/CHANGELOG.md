@@ -986,3 +986,31 @@ Implementar la infraestructura de integración con Gemini (interfaz agnóstica, 
 
 ### Próximo paso
 Fase 34 — `ProductivityAnalysisPromptInput`, `ProductivityAnalysisPromptBuilder` y `ProductivityAnalysisService`.
+
+---
+
+## 2026-07-26 — Fase 34
+
+### Sprint
+Sprint 7 - Artificial Intelligence
+
+### Objetivo
+Implementar la capa de servicio del módulo AI: orquestación del análisis de productividad, PromptBuilder y DTOs públicos, sin controller ni tests.
+
+### Cambios realizados
+- Creados DTOs `ProductivityAnalysisRequest` y `ProductivityAnalysisResponse`.
+- Creado `ProductivityAnalysisPromptInput` (modelo interno con DTOs de Statistics).
+- Creado `ProductivityAnalysisPromptBuilder` con instrucciones, métricas agregadas serializadas y formato JSON exigido.
+- Creado `ProductivityAnalysisService` con flujo completo: Statistics → prompt → `AiLanguageModelClient` → parseo → respuesta.
+
+### Decisiones tomadas
+- Periodo delegado a `ProductivityStatisticsService` vía `StatisticsPeriodQuery` (mismas reglas y defaults que Statistics).
+- Parseo JSON de respuesta IA en el Service con `IllegalStateException` temporal; excepciones de dominio IA en Fase 37.
+- Listas `insights`/`recommendations` limitadas a 10 elementos; campos obligatorios validados tras parseo.
+- Sin controller, exception handler, tests ni cambios en `GeminiClient`/configuración.
+
+### Estado del proyecto
+🔄 Sprint 7 en curso — Fase 34 (`ProductivityAnalysisService`) completada; pendiente controller.
+
+### Próximo paso
+Fase 35 — `AiController` + OpenAPI.
