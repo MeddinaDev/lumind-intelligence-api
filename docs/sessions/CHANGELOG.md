@@ -792,3 +792,31 @@ Implementar la capa de acceso a datos read-only del módulo Productivity Statist
 
 ### Próximo paso
 Fase 27 — `ProductivityStatisticsService` y reglas de periodo.
+
+---
+
+## 2026-07-26 — Fase 27
+
+### Sprint
+Sprint 6 - Statistics
+
+### Objetivo
+Implementar la capa Service del módulo Productivity Statistics con reglas de negocio y construcción de DTOs de respuesta.
+
+### Cambios realizados
+- Creado paquete `statistics/service` con `ProductivityStatisticsService` (solo lectura, inyección por constructor).
+- Creados DTOs de request (`StatisticsPeriodQuery`) y response (overview, tareas, Pomodoro, hábitos y tendencias diarias).
+- Creada `InvalidStatisticsPeriodException` para validación de periodo (`from` > `to` o duración > 366 días).
+- Implementados casos de uso: overview, task statistics, pomodoro statistics y habit statistics.
+- Reglas de negocio: defaults de periodo (30 días UTC / `now()`), `completionRate`, promedios y colecciones vacías sin `null`.
+
+### Decisiones tomadas
+- Service depende únicamente de `ProductivityStatisticsRepository`; sin acoplamiento a otros módulos.
+- Construcción manual de DTOs; sin MapStruct ni mappers adicionales.
+- Sin controller, exception handler global, tests ni Swagger (fuera de alcance).
+
+### Estado del proyecto
+🔄 Sprint 6 en curso — Fase 27 (`ProductivityStatisticsService`) completada; pendiente controller.
+
+### Próximo paso
+Fase 28 — `StatisticsController` + OpenAPI.
