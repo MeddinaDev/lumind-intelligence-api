@@ -874,3 +874,29 @@ Integrar `InvalidStatisticsPeriodException` en el manejo global de excepciones c
 
 ### Próximo paso
 Fase 30 — tests de `ProductivityStatisticsService` e integración de endpoints statistics (MockMvc).
+
+---
+
+## 2026-07-26 — Fase 30
+
+### Sprint
+Sprint 6 - Statistics
+
+### Objetivo
+Implementar la batería completa de tests del módulo Productivity Statistics (unitarios e integración).
+
+### Cambios realizados
+- Creado `ProductivityStatisticsTestData` con periodos, métricas y agregaciones reutilizables.
+- Creado `ProductivityStatisticsServiceTest` (Mockito): 4 métodos del service, periodo por defecto/personalizado, validaciones de periodo, datos vacíos, tasas con denominador cero y promedio de foco con cero sesiones.
+- Creado `StatisticsControllerIntegrationTest` (`@SpringBootTest`, MockMvc, H2, `@Transactional`): 4 endpoints GET, JWT real vía registro, casos 200/400/401, periodo por defecto/personalizado, usuario sin datos y aislamiento entre usuarios.
+
+### Decisiones tomadas
+- Reutilización de `AuthTestData`, `application-test.yml` y TestData de Habit, Task y Pomodoro para seed de integración.
+- Fechas dinámicas en datos de integración para independencia temporal.
+- Sin cambios en producción (service, controller, repository, seguridad ni configuración).
+
+### Estado del proyecto
+🔄 Sprint 6 en curso — Fase 30 (tests Statistics) completada; pendiente cierre del sprint.
+
+### Próximo paso
+Fase 31 — cierre del Sprint 6 (Statistics).
