@@ -2,6 +2,7 @@ package com.lumind.api.common.exception;
 
 import com.lumind.api.habit.exception.HabitNotFoundException;
 import com.lumind.api.pomodoro.exception.PomodoroSessionNotFoundException;
+import com.lumind.api.statistics.exception.InvalidStatisticsPeriodException;
 import com.lumind.api.task.exception.TaskNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
@@ -28,6 +29,7 @@ public class GlobalExceptionHandler {
     private static final String MSG_HABIT_NOT_FOUND = "Habit not found";
     private static final String MSG_TASK_NOT_FOUND = "Task not found";
     private static final String MSG_POMODORO_SESSION_NOT_FOUND = "Pomodoro session not found";
+    private static final String MSG_INVALID_STATISTICS_PERIOD = "Invalid statistics period";
     private static final String MSG_UNEXPECTED_ERROR = "An unexpected error occurred";
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -120,6 +122,16 @@ public class GlobalExceptionHandler {
         log.debug("Pomodoro session not found for path: {}", request.getRequestURI());
 
         return buildResponse(HttpStatus.NOT_FOUND, MSG_POMODORO_SESSION_NOT_FOUND, request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(InvalidStatisticsPeriodException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidStatisticsPeriod(
+            InvalidStatisticsPeriodException ex,
+            HttpServletRequest request
+    ) {
+        log.debug("Invalid statistics period for path: {}", request.getRequestURI());
+
+        return buildResponse(HttpStatus.BAD_REQUEST, MSG_INVALID_STATISTICS_PERIOD, request.getRequestURI(), null);
     }
 
     @ExceptionHandler(Exception.class)

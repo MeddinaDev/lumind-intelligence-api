@@ -848,3 +848,29 @@ Implementar la capa Controller del módulo Productivity Statistics con endpoints
 
 ### Próximo paso
 Fase 29 — integración de `InvalidStatisticsPeriodException` en `GlobalExceptionHandler`.
+
+---
+
+## 2026-07-26 — Fase 29
+
+### Sprint
+Sprint 6 - Statistics
+
+### Objetivo
+Integrar `InvalidStatisticsPeriodException` en el manejo global de excepciones con respuesta HTTP 400.
+
+### Cambios realizados
+- Añadido handler `handleInvalidStatisticsPeriod` en `GlobalExceptionHandler`.
+- Respuesta `400 Bad Request` con `ErrorResponse` estándar (`message`: "Invalid statistics period").
+- Handler registrado antes del catch-all `Exception` para evitar respuestas `500`.
+- Verificado que `@ApiResponse(responseCode = "400")` en `StatisticsController` coincide con el comportamiento real.
+
+### Decisiones tomadas
+- Mensaje genérico "Invalid statistics period" para `from > to` y periodo > 366 días (sin distinguir causa en la respuesta).
+- Sin tests, sin cambios en `ProductivityStatisticsService`, `StatisticsController`, `SecurityConfig`, `AuthService` ni otros módulos.
+
+### Estado del proyecto
+🔄 Sprint 6 en curso — Fase 29 (excepciones Statistics) completada; pendiente tests.
+
+### Próximo paso
+Fase 30 — tests de `ProductivityStatisticsService` e integración de endpoints statistics (MockMvc).
