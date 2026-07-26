@@ -3,6 +3,7 @@ package com.lumind.api.ai.prompt;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.lumind.api.ai.prompt.model.ProductivityAnalysisPromptInput;
 import org.springframework.stereotype.Component;
 
@@ -25,7 +26,9 @@ public class ProductivityAnalysisPromptBuilder {
             }
             """;
 
-    private final ObjectMapper objectMapper = JsonMapper.builder().build();
+    private final ObjectMapper objectMapper = JsonMapper.builder()
+            .addModule(new JavaTimeModule())
+            .build();
 
     public String build(ProductivityAnalysisPromptInput input) {
         long periodDays = ChronoUnit.DAYS.between(

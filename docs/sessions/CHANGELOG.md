@@ -1069,3 +1069,32 @@ Integrar el manejo de excepciones del módulo AI en `GlobalExceptionHandler` y p
 
 ### Próximo paso
 Fase 37 — tests de `ProductivityAnalysisService`, `ProductivityAnalysisPromptBuilder` e integración de endpoint AI (MockMvc).
+
+---
+
+## 2026-07-26 — Fase 37
+
+### Sprint
+Sprint 7 - Artificial Intelligence
+
+### Objetivo
+Implementar la batería completa de tests del módulo AI (unitarios e integración MockMvc) siguiendo el estándar de Habit, Task, Pomodoro y Statistics.
+
+### Cambios realizados
+- Creado `ProductivityAnalysisTestData` reutilizando `ProductivityStatisticsTestData` y `AuthTestData`.
+- Creado `ProductivityAnalysisServiceTest` (12 tests Mockito): flujo completo, periodos, parseo JSON, periodo inválido, datos vacíos y propagación de excepciones IA.
+- Creado `ProductivityAnalysisPromptBuilderTest` (5 tests): métricas agregadas, ausencia de PII, schema JSON y métricas vacías.
+- Creado `AiControllerIntegrationTest` (10 tests): 200, 400, 401, 429, 502, 503, 504, usuario sin datos, periodo por defecto y personalizado.
+- Añadido `@ApiResponse(502)` en `AiController` para alinear Swagger con `AiResponseInvalidException`.
+- Corregido `ProductivityAnalysisPromptBuilder`: registro de `JavaTimeModule` para serializar `Instant` en métricas.
+
+### Decisiones tomadas
+- `@MockBean` de `AiLanguageModelClient` en integración para escenarios de error IA sin llamadas externas reales.
+- Parseo inválido en Service sigue con `IllegalStateException` (500); 502 verificado vía propagación de `AiResponseInvalidException`.
+- Reutilización de infraestructura H2, `application-test.yml`, registro JWT real y seed de productividad del patrón Statistics.
+
+### Estado del proyecto
+🔄 Sprint 7 en curso — Fase 37 (tests AI) completada; pendiente cierre del sprint.
+
+### Próximo paso
+Fase 38 — cierre del Sprint 7 (AI Productivity Analysis).

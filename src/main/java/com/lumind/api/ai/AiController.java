@@ -41,6 +41,7 @@ public class AiController {
             @ApiResponse(responseCode = "400", description = "Invalid period or malformed request body"),
             @ApiResponse(responseCode = "401", description = "Missing or invalid access token"),
             @ApiResponse(responseCode = "429", description = "AI analysis rate limit exceeded"),
+            @ApiResponse(responseCode = "502", description = "AI analysis could not be processed"),
             @ApiResponse(responseCode = "500", description = "Unexpected server error"),
             @ApiResponse(responseCode = "503", description = "AI analysis service unavailable or not configured"),
             @ApiResponse(responseCode = "504", description = "AI analysis request timed out")
