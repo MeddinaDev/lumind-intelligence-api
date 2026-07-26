@@ -820,3 +820,31 @@ Implementar la capa Service del módulo Productivity Statistics con reglas de ne
 
 ### Próximo paso
 Fase 28 — `StatisticsController` + OpenAPI.
+
+---
+
+## 2026-07-26 — Fase 28
+
+### Sprint
+Sprint 6 - Statistics
+
+### Objetivo
+Implementar la capa Controller del módulo Productivity Statistics con endpoints GET protegidos por JWT y documentación OpenAPI.
+
+### Cambios realizados
+- Creado `StatisticsController` con base path `/api/v1/statistics` e inyección por constructor de `ProductivityStatisticsService`.
+- Implementados 4 endpoints GET: `/overview`, `/tasks`, `/pomodoro-sessions` y `/habits`.
+- Binding de periodo vía `@ParameterObject` + `@Valid` sobre `StatisticsPeriodQuery` (`from`, `to` opcionales).
+- Documentación OpenAPI: `@Tag`, `@SecurityRequirement`, `@Operation`, `@ApiResponses` y `@Schema` en query params.
+- Sin tests ni integración de excepciones (fuera de alcance).
+
+### Decisiones tomadas
+- Controller delgado: delegación total al service; validación de rango de periodo permanece en service.
+- Autenticación JWT vía `@AuthenticationPrincipal AuthenticatedUser`; rutas protegidas por configuración existente.
+- Sin acceso directo a repositories ni dependencias de otros módulos de negocio.
+
+### Estado del proyecto
+🔄 Sprint 6 en curso — Fase 28 (`StatisticsController`) completada; pendiente exception handling.
+
+### Próximo paso
+Fase 29 — integración de `InvalidStatisticsPeriodException` en `GlobalExceptionHandler`.
