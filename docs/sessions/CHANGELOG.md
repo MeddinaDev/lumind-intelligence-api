@@ -900,3 +900,30 @@ Implementar la batería completa de tests del módulo Productivity Statistics (u
 
 ### Próximo paso
 Fase 31 — cierre del Sprint 6 (Statistics).
+
+---
+
+## 2026-07-26 — Fase 31
+
+### Sprint
+Sprint 6 - Statistics
+
+### Objetivo
+Cerrar el Sprint Productivity Statistics dejando el módulo listo para producción: verificación del proyecto, análisis de cobertura JaCoCo, revisión técnica y comprobación de consistencia con los módulos Auth, Habit, Task y Pomodoro.
+
+### Cambios realizados
+- Verificación con `mvn clean verify`: BUILD SUCCESS; 127 tests (0 failures, 0 errors, 0 skipped); compilación correcta.
+- Análisis JaCoCo de `com.lumind.api.statistics`: Instructions 97.9 %, Branches 85.0 %, Lines 98.3 %, Methods 100 %, Classes 100 % — por encima del estándar de Habit, Task y Pomodoro.
+- Revisión técnica del módulo: sin código duplicado relevante, imports sin usar, métodos muertos, mal uso de `Optional` ni riesgos NPE adicionales detectados.
+- Quality Gate cumplido: arquitectura feature-based, DTOs tipados, OpenAPI, excepciones globales, tests unitarios (17) e integración (10), sin cambios de esquema Flyway (read model).
+
+### Decisiones tomadas
+- Sin nuevas funcionalidades ni cambios de comportamiento.
+- Sin tests artificiales: la cobertura pendiente se limita a ramas defensivas de `ProductivityStatisticsRepository.toLocalDate()` (compatibilidad PostgreSQL/H2), no críticas para el comportamiento público.
+- Sin modificaciones fuera de `docs/sessions/CHANGELOG.md` en documentación.
+
+### Estado del proyecto
+✅ Sprint 6 (Statistics) finalizado — módulo listo para producción.
+
+### Próximo paso
+Fase 7 — AI Productivity Analysis (Sprint 7).
