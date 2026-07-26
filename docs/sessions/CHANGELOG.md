@@ -1014,3 +1014,30 @@ Implementar la capa de servicio del módulo AI: orquestación del análisis de p
 
 ### Próximo paso
 Fase 35 — `AiController` + OpenAPI.
+
+---
+
+## 2026-07-26 — Fase 35
+
+### Sprint
+Sprint 7 - Artificial Intelligence
+
+### Objetivo
+Implementar la capa HTTP del módulo AI con endpoint POST protegido por JWT y documentación OpenAPI, sin modificar lógica de negocio ni tests.
+
+### Cambios realizados
+- Creado `AiController` con `POST /api/v1/ai/productivity-analysis`.
+- Validación de entrada con `@Valid` sobre `ProductivityAnalysisRequest`.
+- Documentación OpenAPI: `@Tag`, `@SecurityRequirement`, `@Operation`, `@ApiResponses` (200, 400, 401, 429, 500, 503, 504).
+- Delegación total a `ProductivityAnalysisService`; usuario autenticado vía `@AuthenticationPrincipal AuthenticatedUser`.
+
+### Decisiones tomadas
+- Controller delgado sin reglas de negocio ni acceso a repositories.
+- Respuesta HTTP `200 OK` con `ProductivityAnalysisResponse`.
+- Sin tests, sin exception handler IA, sin cambios en services, Gemini, configuración ni seguridad.
+
+### Estado del proyecto
+🔄 Sprint 7 en curso — Fase 35 (`AiController`) completada; pendiente exception handling IA.
+
+### Próximo paso
+Fase 36 — excepciones IA + integración en `GlobalExceptionHandler`.
