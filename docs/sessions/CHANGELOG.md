@@ -1041,3 +1041,31 @@ Implementar la capa HTTP del módulo AI con endpoint POST protegido por JWT y do
 
 ### Próximo paso
 Fase 36 — excepciones IA + integración en `GlobalExceptionHandler`.
+
+---
+
+## 2026-07-26 — Fase 36
+
+### Sprint
+Sprint 7 - Artificial Intelligence
+
+### Objetivo
+Integrar el manejo de excepciones del módulo AI en `GlobalExceptionHandler` y preparar la traducción de errores en `GeminiClient`, sin modificar lógica de negocio ni tests.
+
+### Cambios realizados
+- Creadas 5 excepciones de dominio en `ai/exception/`.
+- Añadidos handlers IA en `GlobalExceptionHandler` con mensajes fijos y códigos HTTP acordados a la especificación.
+- Preparado `GeminiClient` con `validateConfiguration`, traducción de timeout/HTTP 429/5xx y `extractGeneratedText` para integración HTTP futura.
+- Verificada coherencia OpenAPI del endpoint AI (400, 401, 429, 500, 503, 504) con handlers registrados.
+
+### Decisiones tomadas
+- Excepciones marker sin mensaje; texto expuesto controlado por `GlobalExceptionHandler`.
+- Stub de GeminiClient sin cambios de comportamiento; métodos de traducción listos para la llamada HTTP real.
+- `AiResponseInvalidException` mapeada a 502; pendiente de documentar en OpenAPI cuando el Service deje de usar `IllegalStateException`.
+- Sin cambios en controllers, services, statistics, seguridad, DTOs, PromptBuilder ni tests.
+
+### Estado del proyecto
+🔄 Sprint 7 en curso — Fase 36 (exception handling IA) completada; pendiente tests.
+
+### Próximo paso
+Fase 37 — tests de `ProductivityAnalysisService`, `ProductivityAnalysisPromptBuilder` e integración de endpoint AI (MockMvc).

@@ -1,5 +1,10 @@
 package com.lumind.api.common.exception;
 
+import com.lumind.api.ai.exception.AiConfigurationException;
+import com.lumind.api.ai.exception.AiRateLimitExceededException;
+import com.lumind.api.ai.exception.AiRequestTimeoutException;
+import com.lumind.api.ai.exception.AiResponseInvalidException;
+import com.lumind.api.ai.exception.AiServiceUnavailableException;
 import com.lumind.api.habit.exception.HabitNotFoundException;
 import com.lumind.api.pomodoro.exception.PomodoroSessionNotFoundException;
 import com.lumind.api.statistics.exception.InvalidStatisticsPeriodException;
@@ -30,6 +35,11 @@ public class GlobalExceptionHandler {
     private static final String MSG_TASK_NOT_FOUND = "Task not found";
     private static final String MSG_POMODORO_SESSION_NOT_FOUND = "Pomodoro session not found";
     private static final String MSG_INVALID_STATISTICS_PERIOD = "Invalid statistics period";
+    private static final String MSG_AI_SERVICE_UNAVAILABLE = "AI analysis service is temporarily unavailable";
+    private static final String MSG_AI_REQUEST_TIMEOUT = "AI analysis request timed out";
+    private static final String MSG_AI_RESPONSE_INVALID = "AI analysis could not be processed";
+    private static final String MSG_AI_CONFIGURATION = "AI analysis service is not configured";
+    private static final String MSG_AI_RATE_LIMIT = "AI analysis rate limit exceeded";
     private static final String MSG_UNEXPECTED_ERROR = "An unexpected error occurred";
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -132,6 +142,56 @@ public class GlobalExceptionHandler {
         log.debug("Invalid statistics period for path: {}", request.getRequestURI());
 
         return buildResponse(HttpStatus.BAD_REQUEST, MSG_INVALID_STATISTICS_PERIOD, request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(AiServiceUnavailableException.class)
+    public ResponseEntity<ErrorResponse> handleAiServiceUnavailable(
+            AiServiceUnavailableException ex,
+            HttpServletRequest request
+    ) {
+        log.warn("AI service unavailable for path: {}", request.getRequestURI());
+
+        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, MSG_AI_SERVICE_UNAVAILABLE, request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(AiRequestTimeoutException.class)
+    public ResponseEntity<ErrorResponse> handleAiRequestTimeout(
+            AiRequestTimeoutException ex,
+            HttpServletRequest request
+    ) {
+        log.warn("AI request timed out for path: {}", request.getRequestURI());
+
+        return buildResponse(HttpStatus.GATEWAY_TIMEOUT, MSG_AI_REQUEST_TIMEOUT, request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(AiResponseInvalidException.class)
+    public ResponseEntity<ErrorResponse> handleAiResponseInvalid(
+            AiResponseInvalidException ex,
+            HttpServletRequest request
+    ) {
+        log.error("Invalid AI response for path: {}", request.getRequestURI());
+
+        return buildResponse(HttpStatus.BAD_GATEWAY, MSG_AI_RESPONSE_INVALID, request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(AiConfigurationException.class)
+    public ResponseEntity<ErrorResponse> handleAiConfiguration(
+            AiConfigurationException ex,
+            HttpServletRequest request
+    ) {
+        log.warn("AI service not configured for path: {}", request.getRequestURI());
+
+        return buildResponse(HttpStatus.SERVICE_UNAVAILABLE, MSG_AI_CONFIGURATION, request.getRequestURI(), null);
+    }
+
+    @ExceptionHandler(AiRateLimitExceededException.class)
+    public ResponseEntity<ErrorResponse> handleAiRateLimitExceeded(
+            AiRateLimitExceededException ex,
+            HttpServletRequest request
+    ) {
+        log.warn("AI rate limit exceeded for path: {}", request.getRequestURI());
+
+        return buildResponse(HttpStatus.TOO_MANY_REQUESTS, MSG_AI_RATE_LIMIT, request.getRequestURI(), null);
     }
 
     @ExceptionHandler(Exception.class)
