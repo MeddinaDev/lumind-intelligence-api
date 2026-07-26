@@ -926,4 +926,35 @@ Cerrar el Sprint Productivity Statistics dejando el módulo listo para producci�
 ✅ Sprint 6 (Statistics) finalizado — módulo listo para producción.
 
 ### Próximo paso
-Fase 7 — AI Productivity Analysis (Sprint 7).
+Fase 32 — diseño del módulo AI Productivity Analysis.
+
+---
+
+## 2026-07-26 — Fase 32
+
+### Sprint
+Sprint 7 - Artificial Intelligence
+
+### Objetivo
+Diseñar la arquitectura completa del módulo AI Productivity Analysis antes de implementar cualquier integración con Gemini, sin código de producción.
+
+### Cambios realizados
+- Creada especificación técnica en `docs/spec/ai/SPECIFICATION.md`.
+- Definidos 3 casos de uso y endpoint POST `/api/v1/ai/productivity-analysis`.
+- Diseñada arquitectura interna: Controller, Service, PromptBuilder, `AiLanguageModelClient`, GeminiClient encapsulado, DTOs y configuración.
+- Establecida dependencia exclusiva con `ProductivityStatisticsService` (sin acceso a Habit, Task ni Pomodoro).
+- Diseñadas estrategias de prompt, integración Gemini, manejo de errores y flujo HTTP completo.
+- Propuestos ADR 009–012; pendientes de aprobación.
+
+### Decisiones tomadas
+- AI como consumidor downstream del read model Statistics; métricas agregadas como única fuente de datos.
+- PromptBuilder dedicado; el Service no construye prompts.
+- Gemini encapsulado tras interfaz `AiLanguageModelClient` para permitir sustitución de proveedor.
+- Análisis stateless en Sprint 7 (sin persistencia de prompts ni respuestas).
+- Sin implementación de código, tests ni ADRs en esta fase.
+
+### Estado del proyecto
+🔄 Sprint 7 en curso — Fase 32 (diseño AI) completada; pendiente aprobación e implementación.
+
+### Próximo paso
+Fase 33 — configuración Gemini, `AiLanguageModelClient` y `GeminiClient`.
