@@ -736,4 +736,59 @@ Cerrar el Sprint Pomodoro dejando el módulo listo para producción: verificaci�
 ✅ Sprint 5 (Pomodoro) finalizado — módulo listo para producción.
 
 ### Próximo paso
-Sprint 6 — Fase 6: Productivity Statistics.
+Fase 25 — diseño del módulo Productivity Statistics.
+
+---
+
+## 2026-07-26 — Fase 25
+
+### Sprint
+Sprint 6 - Statistics
+
+### Objetivo
+Diseñar el módulo Productivity Statistics antes de implementación: casos de uso, endpoints, DTOs, métricas y decisiones arquitectónicas, sin código de negocio.
+
+### Cambios realizados
+- Creada especificación técnica en `docs/spec/statistics/SPECIFICATION.md`.
+- Definidos 4 casos de uso, 4 endpoints GET bajo `/api/v1/statistics`.
+- Diseñados DTOs de consulta (`StatisticsPeriodQuery`) y 6 response records anidados.
+- Definidas métricas de tareas, Pomodoro y hábitos derivadas de datos existentes (sin duplicación).
+- Propuestos ADR 007 (read model) y ADR 008 (semántica temporal); pendientes de aprobación.
+
+### Decisiones tomadas
+- Statistics como read model: agregación en consulta, sin entidades ni migraciones en Sprint 6.
+- Periodo en UTC; `updatedAt` como proxy de completado en tareas (limitación documentada).
+- Hábitos: solo inventario y altas en periodo (sin completados; modelo actual no lo soporta).
+- Sin implementación de código, tests ni ADRs en esta fase.
+
+### Estado del proyecto
+🔄 Sprint 6 en curso — Fase 25 (diseño Statistics) completada; pendiente aprobación e implementación.
+
+### Próximo paso
+Fase 26 — implementación de queries y `ProductivityStatisticsRepository`.
+
+---
+
+## 2026-07-26 — Fase 26
+
+### Sprint
+Sprint 6 - Statistics
+
+### Objetivo
+Implementar la capa de acceso a datos read-only del módulo Productivity Statistics con consultas JPQL de agregación.
+
+### Cambios realizados
+- Creado paquete `statistics/repository` con `ProductivityStatisticsRepository` (solo lectura, `EntityManager` + JPQL).
+- Creadas proyecciones `DailyCountAggregation` y `DailyMinutesAggregation` para tendencias diarias.
+- Implementadas 10 consultas de agregación sobre entidades `Task`, `PomodoroSession` y `Habit` (overview, tareas, Pomodoro y hábitos).
+
+### Decisiones tomadas
+- Repositorio sin entidad propia ni `JpaRepository`; inyección por constructor de `EntityManager`.
+- Agregaciones con `COUNT`/`SUM`/`GROUP BY`; sin carga de entidades completas ni consultas N+1.
+- Sin services, controllers, tests, excepciones ni DTOs de API (fuera de alcance).
+
+### Estado del proyecto
+🔄 Sprint 6 en curso — Fase 26 (`ProductivityStatisticsRepository`) completada; pendiente capa de servicio.
+
+### Próximo paso
+Fase 27 — `ProductivityStatisticsService` y reglas de periodo.
