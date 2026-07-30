@@ -1153,3 +1153,35 @@ Eliminar deuda técnica crítica del módulo AI y Pomodoro sin introducir nuevas
 
 ### Próximo paso
 Fase 41 — actualización documental global (AGENTS.md, README, specs, ADRs).
+
+---
+
+## 2026-07-30 — Fase 41
+
+### Sprint
+Sprint 8 - Testing & Hardening
+
+### Objetivo
+Sincronizar toda la documentación con el estado real del proyecto tras el cierre del Sprint 7 y la Fase 40, sin modificar código fuente.
+
+### Cambios realizados
+- Actualizado `AGENTS.md`: Sprint 8 actual, JWT operativo, features completadas, 154 tests, Flyway V1–V5, tech stack y enlaces corregidos.
+- Reescrito `README.md`: estado real de features, JWT, endpoints, cobertura ~91 %, roadmap y stack.
+- Actualizados `PROJECT_CONTEXT.md`, `ROADMAP.md` y `SPRINTS.md` con progreso real (Sprints 0–7 ✅, Sprint 8 🔄).
+- Marcadas como implementadas las specs de Authentication, Statistics y AI; deuda técnica documentada en cada una.
+- Actualizado ADR 003 con estrategia JWT vigente y tabla de implementación.
+- Creados ADRs 007–012 (Statistics read model, temporal semantics, AI dependencies, provider encapsulation, prompt builder, stateless analysis).
+- Corregido enlace roto `docs/  DEFINITION_OF_DONE.md` → `docs/DEFINITION_OF_DONE.md`.
+- Poblados `docs/spec/plan.md`, `tasks.md` y `spec.md` como índices de navegación.
+- Corregido enlace `AGENTS.md` en spec de authentication.
+
+### Decisiones tomadas
+- Sin cambios en código Java, tests ni configuración.
+- Deuda técnica aceptada explícita en specs: stub Gemini, logout, Testcontainers, CI/CD.
+- `PROJECT_CONTEXT.md` traducido al español según `LANGUAGE_POLICY.md`.
+
+### Estado del proyecto
+🔄 Sprint 8 en curso — Fase 41 (documentación) completada.
+
+### Próximo paso
+Fase 42 — Testcontainers PostgreSQL en tests de integración.

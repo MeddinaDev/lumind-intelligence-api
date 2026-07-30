@@ -10,11 +10,23 @@
 
 ## Contexto
 
-En Sprint 1 se configuró Spring Security con **HTTP Basic** como mecanismo temporal. Todas las rutas excepto Swagger y Actuator requieren autenticación básica.
+En Sprint 1 se configuró Spring Security con **HTTP Basic** como mecanismo temporal. En **Sprint 2 (Fases 1–9)** se completó la sustitución por **JWT Bearer**. El estado vigente es API REST stateless con tokens JWT para acceder a recursos protegidos.
 
-En Sprint 2 (Fase 2 del roadmap) la API debe ofrecer autenticación propia mediante registro y login, con tokens JWT para acceder a recursos protegidos. Lumind es una API REST stateless orientada a clientes (web/móvil).
+La especificación técnica de autenticación está implementada en [docs/spec/authentication/SPECIFICATION.md](../spec/authentication/SPECIFICATION.md).
 
-La especificación técnica de autenticación está aprobada en [docs/spec/authentication/SPECIFICATION.md](../spec/authentication/SPECIFICATION.md).
+---
+
+## Estado de implementación (2026-07-30)
+
+| Elemento | Estado |
+|----------|--------|
+| HTTP Basic | ❌ Eliminado |
+| JWT Bearer + filtro | ✅ Operativo |
+| Register / Login / Refresh | ✅ Implementados |
+| Refresh token hash SHA-256 + rotación | ✅ Implementado |
+| Rutas públicas según tabla inferior | ✅ Configuradas |
+| Logout server-side | ⏳ Fuera de alcance (deuda técnica) |
+| Rate limiting | ⏳ Fuera de alcance |
 
 ---
 
@@ -25,7 +37,7 @@ Se adopta la siguiente estrategia de seguridad para Sprint 2:
 ### Autenticación
 
 - Mecanismo principal: **JWT Bearer** en header `Authorization`.
-- HTTP Basic se sustituirá por JWT en la Fase 6 de implementación (filtro y `SecurityConfig`).
+- HTTP Basic **eliminado** en Sprint 2 (Fase 6: `JwtAuthenticationFilter` + `SecurityConfig`).
 - Sesión Spring Security: **STATELESS** (sin sesión HTTP server-side).
 
 ### Contraseñas

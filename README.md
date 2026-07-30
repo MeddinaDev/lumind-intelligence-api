@@ -2,123 +2,76 @@
 
 > Backend REST desarrollado con Spring Boot 3.5 para la plataforma de productividad Lumind.
 
-> El proyecto implementa una arquitectura modular basada en features, autenticación JWT, migraciones con Flyway, documentación OpenAPI y una batería de tests automatizados con cobertura superior al 90%.
-
-> Actualmente se encuentra en desarrollo activo. Ya incluye autenticación completa mediante JWT, gestión de hábitos, documentación OpenAPI, migraciones con Flyway y una arquitectura modular organizada por features.
-
-
+> Arquitectura modular basada en features, autenticación JWT, migraciones Flyway, documentación OpenAPI y **154 tests automatizados** con ~91 % de cobertura JaCoCo.
 
 ## Características
 
-- JWT Authentication
-
-- Refresh Tokens
-
-- Habit CRUD
-
-- Task CRUD
-
+- JWT Authentication (register, login, refresh)
+- Refresh token rotation (SHA-256 en BD)
+- Habit, Task y Pomodoro CRUD
+- Productivity Statistics (read model)
+- AI Productivity Analysis (Gemini encapsulado; stub en desarrollo)
 - Swagger / OpenAPI
-
-- Flyway
-
+- Flyway (V1–V5)
 - Bean Validation
-
 - MapStruct
-
 - Arquitectura Feature Based
-
-- Tests unitarios
-
-- Tests de integración
-
+- Tests unitarios e integración (MockMvc)
 - JaCoCo
-
-
 
 ## Estado del repositorio
 
 | Componente | Estado |
 |------------|--------|
-| Aplicación Spring Boot | Configurada y ejecutable |
-| Conexión PostgreSQL + Flyway | Configurados; migraciones `V1` (users) y `V2` (refresh_tokens) |
-| Spring Security | HTTP Basic; rutas públicas en Swagger y Actuator; JWT: dependencia y config (Fase 0), lógica pendiente |
-| Feature `user` | Entidad `User`, `UserRepository`, `UserSummaryResponse`, `UserMapper` (Fase 2) |
-| OpenAPI / Swagger UI | Configurado (sin operaciones de API) |
+| Aplicación Spring Boot | ✅ Configurada y ejecutable |
+| PostgreSQL + Flyway | ✅ V1–V5 (users, refresh_tokens, habits, tasks, pomodoro_sessions) |
+| Spring Security | ✅ JWT Bearer stateless; rutas públicas auth, Swagger y Actuator |
+| OpenAPI / Swagger UI | ✅ Todos los endpoints documentados |
 
-| Feature        | Estado |
-| -------------- | ------ |
-| Authentication | ✅     |
-| JWT Security   | ✅     |
-| Habits         | ✅     |
-| Tasks          | ✅     |
-| Pomodoro       | 🚧     |
-| Statistics     | 🚧     |
-| AI             | 🚧     |
-
+| Feature | Estado |
+|---------|--------|
+| Authentication | ✅ |
+| Habits | ✅ |
+| Tasks | ✅ |
+| Pomodoro | ✅ |
+| Statistics | ✅ |
+| AI Analysis | ✅ (stub Gemini; HTTP real pendiente) |
+| User profile API | ⏳ Entidad/repository; sin endpoints |
 
 ## Stack
 
 - Java 21
 - Spring Boot 3.5
-- Spring Security
+- Spring Security (JWT)
 - Spring Data JPA
-- PostgreSQL
+- PostgreSQL 16+
 - Flyway
 - SpringDoc OpenAPI
 - MapStruct · Lombok
-- Maven
-
-## Requisitos
-
-- Java 21
-- Maven 3.9+
-- PostgreSQL 16+
+- JJWT 0.13.0
+- Maven · JaCoCo
 
 ## Roadmap
 
-✅ Authentication
-
-✅ JWT Security
-
-✅ Habit CRUD
-
-✅ Tasks
-
-🚧 Pomodoro
-
-🚧 Statistics
-
-🚧 AI Assistant
-
-🚧 Notifications
-
+| Fase | Estado |
+|------|--------|
+| Setup + Security base | ✅ |
+| Authentication (JWT) | ✅ |
+| Habits | ✅ |
+| Tasks | ✅ |
+| Pomodoro | ✅ |
+| Statistics | ✅ |
+| AI Analysis | ✅ (stub) |
+| Testing & Hardening | 🔄 Sprint 8 en curso |
+| Documentation polish | ⏳ Sprint 9 |
 
 ## Calidad
-Java 21
 
-Arquitectura Feature-Based
-
-JWT
-
-Clean Code
-
-SOLID
-
-MapStruct
-
-Bean Validation
-
-JUnit 5
-
-Mockito
-
-MockMvc
-
-JaCoCo
-
-93% cobertura
-
+- Arquitectura Feature-Based
+- Clean Code · SOLID
+- 154 tests · ~91 % cobertura JaCoCo (instrucciones)
+- Bean Validation · MapStruct
+- JUnit 5 · Mockito · MockMvc
 
 ## Configuración
 
@@ -133,49 +86,57 @@ Variables de entorno (valores por defecto entre paréntesis):
 | `DB_PASSWORD` | Contraseña | `lumind` |
 | `SERVER_PORT` | Puerto de la aplicación | `8080` |
 | `JWT_SECRET` | Secreto HMAC para firmar JWT (mín. 256 bits) | — (obligatorio) |
+| `GEMINI_API_KEY` | API key de Gemini (producción AI) | — (opcional; stub en dev) |
 
 Referencia completa en [`.env.example`](.env.example).
 
 ## Ejecución local
 
 ```bash
-# Crear la base de datos y el usuario en PostgreSQL
 createdb lumind
-
-# Definir JWT_SECRET (obligatorio para arrancar la aplicación)
 export JWT_SECRET=$(openssl rand -base64 32)
-
-# Arrancar la aplicación
 mvn spring-boot:run
 ```
 
-> **Nota:** `JWT_SECRET` debe estar definido antes de ejecutar `mvn spring-boot:run`. Sin esta variable, Spring Boot no puede resolver la configuración JWT en `application.yml`. Puedes copiar [`.env.example`](.env.example) a `.env` y exportar las variables, o definirlas manualmente en tu shell.
-
-Otros comandos útiles:
+> **Nota:** `JWT_SECRET` es obligatorio. Copia [`.env.example`](.env.example) a `.env` o exporta las variables en tu shell.
 
 ```bash
-mvn test        # Ejecutar tests (cuando existan)
-mvn package     # Compilar y empaquetar
+mvn clean verify   # Compilar, tests (154) y reporte JaCoCo
+mvn package        # Compilar y empaquetar
 ```
 
-## Endpoints disponibles
+## Endpoints de API
 
-| Ruta | Descripción | Acceso |
-|------|-------------|--------|
-| `/swagger-ui.html` | Interfaz Swagger UI | Público |
-| `/v3/api-docs` | Especificación OpenAPI | Público |
-| `/actuator/health` | Estado de salud | Público |
-| `/actuator/info` | Información de la aplicación | Público |
+Rutas públicas (sin JWT):
 
-El resto de rutas requieren autenticación HTTP Basic.
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| `POST` | `/api/v1/auth/register` | Registro |
+| `POST` | `/api/v1/auth/login` | Login |
+| `POST` | `/api/v1/auth/refresh` | Renovar tokens |
+| — | `/swagger-ui.html`, `/v3/api-docs` | OpenAPI |
+| — | `/actuator/health`, `/actuator/info` | Actuator |
+
+Rutas protegidas (JWT Bearer):
+
+| Método | Ruta | Descripción |
+|--------|------|-------------|
+| CRUD | `/api/v1/habits` | Hábitos |
+| CRUD | `/api/v1/tasks` | Tareas |
+| CRUD | `/api/v1/pomodoro-sessions` | Sesiones Pomodoro |
+| `GET` | `/api/v1/statistics/overview` | Resumen de productividad |
+| `GET` | `/api/v1/statistics/tasks` | Estadísticas de tareas |
+| `GET` | `/api/v1/statistics/pomodoro-sessions` | Estadísticas Pomodoro |
+| `GET` | `/api/v1/statistics/habits` | Estadísticas de hábitos |
+| `POST` | `/api/v1/ai/productivity-analysis` | Análisis IA |
 
 ## Estructura del proyecto
 
 ```
 src/main/java/com/lumind/api/
-├── config/          # Security, OpenAPI
-├── auth/            
-├── user/            # User, UserRepository, UserSummaryResponse, UserMapper
+├── config/          # Security, JWT, OpenAPI, Gemini
+├── auth/
+├── user/
 ├── habit/
 ├── task/
 ├── pomodoro/
@@ -186,8 +147,8 @@ src/main/java/com/lumind/api/
 
 ## Documentación
 
-- [AGENTS.md](AGENTS.md) — documento maestro del proyecto (arquitectura, estándares, workflow)
-- [docs/](docs/) — contexto, roadmap, decisiones arquitectónicas
+- [AGENTS.md](AGENTS.md) — documento maestro (arquitectura, estándares, workflow)
+- [docs/](docs/) — contexto, roadmap, ADRs, specs, Development Log
 
 ## Licencia
 

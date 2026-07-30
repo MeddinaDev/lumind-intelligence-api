@@ -1,12 +1,12 @@
 # Especificación técnica — AI Productivity Analysis (Sprint 7)
 
-Documento de diseño — **Fase 32**. Pendiente de aprobación e implementación.
+Documento de diseño **implementado** (Sprint 7 completado; stub Gemini).
 
 | Campo | Valor |
 |-------|-------|
 | Sprint | 7 — Artificial Intelligence |
 | Fase roadmap | Fase 7 — AI Productivity Analysis |
-| Estado | Diseño (2026-07-26) |
+| Estado | Implementada (2026-07-26) |
 | Versión API | `v1` |
 | Base path | `/api/v1/ai` |
 
@@ -441,27 +441,35 @@ Excepciones de dominio en `ai/exception/`; handlers en `GlobalExceptionHandler`.
 
 ---
 
-## 11. Decisiones arquitectónicas — ADR propuestos (no creados en Fase 32)
+## 11. Decisiones arquitectónicas — ADRs
 
-| ADR propuesto | Tema | Motivo |
-|---------------|------|--------|
-| **009-ai-statistics-dependency.md** | AI consume exclusivamente el read model Statistics | Fijar que AI no accede a repositories de Habit/Task/Pomodoro; desacoplamiento entre features de dominio e IA. |
-| **010-ai-provider-encapsulation.md** | Integración Gemini tras `AiLanguageModelClient` | Permitir sustitución de proveedor sin impacto en Controller/Service; confinar SDK/HTTP en `ai.client.gemini`. |
-| **011-ai-prompt-builder-separation.md** | PromptBuilder dedicado fuera del Service | Separación de responsabilidades, testabilidad y auditoría de datos enviados al modelo. |
-| **012-ai-stateless-analysis.md** | Análisis sin persistencia en Sprint 7 | Evitar complejidad de historial/caché prematura; definir alcance stateless explícito. |
+| ADR | Tema | Enlace |
+|-----|------|--------|
+| **009** | AI depende exclusivamente de Statistics | [009-ai-statistics-dependency.md](../../decisions/009-ai-statistics-dependency.md) |
+| **010** | Encapsulamiento del proveedor Gemini | [010-ai-provider-encapsulation.md](../../decisions/010-ai-provider-encapsulation.md) |
+| **011** | PromptBuilder separado del Service | [011-prompt-builder-separation.md](../../decisions/011-prompt-builder-separation.md) |
+| **012** | Análisis stateless sin persistencia | [012-stateless-ai-analysis.md](../../decisions/012-stateless-ai-analysis.md) |
+
+### Deuda técnica aceptada
+
+- `GeminiClient` opera con **stub HTTP**; integración real con Gemini API pendiente.
+- Sin rate limiting server-side en endpoint AI.
+- Sin persistencia de historial de análisis (por diseño ADR 012).
+- Sin streaming de respuestas.
 
 ---
 
-## 12. Plan de implementación sugerido (fases posteriores)
+## 12. Plan de implementación (completado)
 
-| Fase | Contenido |
-|------|-----------|
-| 33 | `GeminiProperties`, `GeminiConfig`, `AiLanguageModelClient`, `GeminiClient` |
-| 34 | `ProductivityAnalysisPromptInput`, `ProductivityAnalysisPromptBuilder` |
-| 35 | `ProductivityAnalysisService` + DTOs |
-| 36 | `AiController` + OpenAPI |
-| 37 | Excepciones IA + `GlobalExceptionHandler` |
-| 38 | Tests unitarios (builder, service con mock client) e integración MockMvc |
+| Fase | Contenido | Estado |
+|------|-----------|--------|
+| 33 | `GeminiProperties`, `GeminiConfig`, `AiLanguageModelClient`, `GeminiClient` | ✅ (stub) |
+| 34 | `ProductivityAnalysisPromptInput`, `ProductivityAnalysisPromptBuilder` | ✅ |
+| 35 | `ProductivityAnalysisService` + DTOs | ✅ |
+| 36 | Excepciones IA + `GlobalExceptionHandler` | ✅ |
+| 37 | Tests unitarios e integración MockMvc | ✅ |
+| 38 | Cierre Sprint 7 | ✅ |
+| 40 | Hardening: transacción LLM, `AiResponseInvalidException` → 502 | ✅ |
 
 ---
 
@@ -470,5 +478,7 @@ Excepciones de dominio en `ai/exception/`; handlers en `GlobalExceptionHandler`.
 - [docs/ROADMAP.md](../../ROADMAP.md) — Fase 7
 - [docs/SPRINTS.md](../../SPRINTS.md) — Sprint 7
 - [docs/spec/statistics/SPECIFICATION.md](../statistics/SPECIFICATION.md) — Read model de métricas
-- [docs/decisions/001-feature-based-architecture.md](../../decisions/001-feature-based-architecture.md)
-- Módulos existentes: `auth`, `user`, `habit`, `task`, `pomodoro`, `statistics`
+- [docs/decisions/009-ai-statistics-dependency.md](../../decisions/009-ai-statistics-dependency.md)
+- [docs/decisions/010-ai-provider-encapsulation.md](../../decisions/010-ai-provider-encapsulation.md)
+- [docs/decisions/011-prompt-builder-separation.md](../../decisions/011-prompt-builder-separation.md)
+- [docs/decisions/012-stateless-ai-analysis.md](../../decisions/012-stateless-ai-analysis.md)

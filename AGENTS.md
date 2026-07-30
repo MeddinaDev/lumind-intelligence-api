@@ -56,18 +56,22 @@ Lumind es una plataforma de productividad impulsada por IA. El objetivo es const
 
 ## Estado actual del proyecto
 
-**Fase 2 / Sprint 2** — autenticación JWT (Fase 0 completada: ADRs, JJWT, config; implementación Fases 1–9 pendiente). Ten en cuenta el estado real del código:
+**Sprint 8 — Testing & Hardening** (Fase 40 completada; Fase 41 documentación). Sprints 2–7 finalizados. Ten en cuenta el estado real del código:
 
 | Área | Estado |
 |------|--------|
-| Endpoints de negocio | No implementados (sin `@RestController`) |
-| Seguridad | HTTP Basic (`SecurityConfig`); JWT: dependencia y config listas (Fase 0), lógica pendiente |
-| Flyway | Configurado; sin migraciones aún |
-| Docker | Planificado; sin `Dockerfile` ni `docker-compose` |
-| Gemini API | Planificado (Fase 7); sin integración |
-| Tests | Dependencias presentes; sin tests escritos |
+| Authentication | ✅ JWT operativo (register, login, refresh, filtro Bearer) |
+| Habit / Task / Pomodoro | ✅ CRUD REST completo con ownership por usuario |
+| Statistics | ✅ Métricas read-only bajo `/api/v1/statistics` |
+| AI | ✅ Análisis de productividad; `GeminiClient` en stub (HTTP real pendiente) |
+| User | 🔄 Entidad + repository; sin endpoints de perfil |
+| Seguridad | ✅ JWT Bearer (`SecurityConfig` stateless); HTTP Basic eliminado |
+| Flyway | ✅ Migraciones V1–V5 (users, refresh_tokens, habits, tasks, pomodoro_sessions) |
+| Tests | ✅ 154 tests automatizados; ~91 % cobertura JaCoCo (instrucciones) |
+| Docker | ⏳ Planificado; sin `Dockerfile` ni `docker-compose` |
+| CI/CD | ⏳ Planificado; sin pipeline GitHub Actions |
 
-No asumas que la autenticación JWT está operativa hasta que existan servicios, filtros y endpoints en el código. JJWT ya está en `pom.xml` y las propiedades JWT en `application.yml` (Fase 0 completada).
+La autenticación JWT está operativa: servicios, filtro, endpoints y tests en producción de código. Deuda técnica aceptada documentada en specs y ADRs (logout, Gemini HTTP real, Testcontainers).
 
 ---
 
@@ -77,25 +81,31 @@ No asumas que la autenticación JWT está operativa hasta que existan servicios,
 
 - Java 21
 - Spring Boot 3.5
-- Spring Security (HTTP Basic)
+- Spring Security (JWT Bearer, stateless)
 - Spring Data JPA
 - PostgreSQL
-- Flyway
+- Flyway (migraciones V1–V5)
 - SpringDoc / Swagger (OpenAPI)
 - MapStruct
 - Lombok
-- JUnit + Mockito (dependencias; tests pendientes)
+- JUnit 5 + Mockito + MockMvc (154 tests)
 - Spring Boot Actuator
-- JJWT 0.13.0 (dependencia; configuración en `application.yml` — Fase 0 Sprint 2)
+- JJWT 0.13.0
+- JaCoCo (~91 % cobertura global)
+- Integración Gemini (stub; cliente HTTP encapsulado)
 
-### Pendiente de implementación (Sprint 2 — auth)
+### Pendiente de implementación (Sprint 8+)
 
-- Autenticación JWT operativa (endpoints, servicios, filtro, sustitución de HTTP Basic — Fases 1–7)
+- Testcontainers PostgreSQL en tests de integración
+- CI/CD con gate JaCoCo
+- Logout / revocación explícita de refresh tokens
+- Gemini HTTP real (sustituir stub)
+- Docker
 
 ### Planificado
 
-- Docker
-- Gemini API (análisis de productividad)
+- Endpoints de perfil de usuario
+- Documentación README definitiva en inglés (Sprint 9)
 
 Nunca introduzcas nuevas tecnologías o dependencias sin aprobación explícita.
 
@@ -257,8 +267,8 @@ Nada más.
 - Usa el principio de mínimo privilegio.
 - Sigue las mejores prácticas de Spring Security.
 
-Estrategia de seguridad: [docs/decisions/003-security-strategy.md](docs/decisions/003-security-strategy.md) (Fase 0 completada)
-JWT: [docs/decisions/004-jwt.md](docs/decisions/004-jwt.md) (dependencia y config — Fase 0; lógica pendiente)
+Estrategia de seguridad: [docs/decisions/003-security-strategy.md](docs/decisions/003-security-strategy.md) (JWT operativo)
+JWT: [docs/decisions/004-jwt.md](docs/decisions/004-jwt.md) (implementado)
 
 ---
 
@@ -361,7 +371,7 @@ Una feature solo está terminada si cumple **todos** estos criterios:
 - Sin warnings.
 - Sigue las convenciones de este archivo.
 
-Checklist detallado: [docs/  DEFINITION_OF_DONE.md](docs/  DEFINITION_OF_DONE.md)
+Checklist detallado: [docs/DEFINITION_OF_DONE.md](docs/DEFINITION_OF_DONE.md)
 
 ---
 
@@ -391,7 +401,7 @@ Pregunta siempre antes de tomar decisiones arquitectónicas.
 | [docs/SPRINTS.md](docs/SPRINTS.md) | Planificación por sprints |
 | [docs/architecture/ARCHITECTURE.md](docs/architecture/ARCHITECTURE.md) | Arquitectura basada en features |
 | [docs/domain/DOMAIN_MODEL.md](docs/domain/DOMAIN_MODEL.md) | Modelo de dominio |
-| [docs/DEFINITION_OF_DONE.md](docs/  DEFINITION_OF_DONE.md) | Checklist de feature terminada |
+| [docs/DEFINITION_OF_DONE.md](docs/DEFINITION_OF_DONE.md) | Checklist de feature terminada |
 | [docs/LANGUAGE_POLICY.md](docs/LANGUAGE_POLICY.md) | Política de idiomas |
 | [docs/decisions/](docs/decisions/) | Architecture Decision Records |
 | [docs/spec/](docs/spec/) | Especificaciones y tareas de features |

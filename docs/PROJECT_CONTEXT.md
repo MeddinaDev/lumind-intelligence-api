@@ -1,58 +1,76 @@
-# Lumind Intelligence API - Project Context
+# Contexto del proyecto — Lumind Intelligence API
 
-## Project Vision
+## Visión
 
-Lumind Intelligence API is the backend of Lumind, a productivity platform focused on helping users improve their time management, habits and concentration through Artificial Intelligence.
+Lumind Intelligence API es el backend de Lumind, una plataforma de productividad orientada a mejorar la gestión del tiempo, los hábitos y la concentración mediante inteligencia artificial.
 
-The project follows a professional software architecture, prioritizing maintainability, scalability and clean code over adding unnecessary technologies.
+El proyecto sigue una arquitectura profesional basada en features, priorizando mantenibilidad, escalabilidad y código limpio frente a la introducción innecesaria de tecnologías.
 
-The objective is to simulate the development of a real production backend.
-
----
-
-## Main Features
-
-- User authentication (JWT)
-- User profile management
-- Habit management
-- Task management
-- Pomodoro session tracking
-- Productivity statistics
-- AI-powered productivity analysis
-- REST API documented with Swagger
+El objetivo es simular el desarrollo de un backend de producción presentable en una entrevista técnica.
 
 ---
 
-## Tech Stack
+## Features principales
+
+| Feature | Estado | Descripción |
+|---------|--------|-------------|
+| Autenticación JWT | ✅ | Registro, login, refresh con rotación de tokens |
+| Usuarios | 🔄 | Entidad y persistencia; perfil sin API pública aún |
+| Hábitos | ✅ | CRUD REST con ownership por usuario |
+| Tareas | ✅ | CRUD REST con estado completado |
+| Sesiones Pomodoro | ✅ | CRUD REST con seguimiento de foco |
+| Estadísticas de productividad | ✅ | Read model read-only (JPQL agregado) |
+| Análisis IA | ✅ | Informe vía Gemini (stub HTTP; integración real pendiente) |
+| API REST documentada | ✅ | OpenAPI / Swagger UI |
+
+---
+
+## Stack tecnológico
 
 - Java 21
-- Spring Boot 3
-- Spring Security
-- JWT
+- Spring Boot 3.5
+- Spring Security (JWT Bearer)
 - Spring Data JPA
-- PostgreSQL
-- Flyway
-- Docker
-- Swagger / OpenAPI
-- Gemini API
-- JUnit
-- Mockito
-- Lombok
-- MapStruct
+- PostgreSQL + Flyway
+- SpringDoc OpenAPI
+- MapStruct · Lombok
+- JJWT 0.13.0
+- Gemini API (encapsulada; stub en desarrollo)
+- JUnit 5 · Mockito · MockMvc · JaCoCo
+
+**Planificado:** Docker, CI/CD, Testcontainers en tests de integración.
 
 ---
 
-## Development Principles
+## Principios de desarrollo
 
-- Feature-based architecture.
-- Clean and readable code.
-- Small commits.
-- Every architectural decision must have a reason.
-- No copy-paste programming.
-- AI is used as a development assistant, not as the developer.
+- Arquitectura basada en features.
+- Código explícito y legible.
+- Commits pequeños y lógicos.
+- Toda decisión arquitectónica relevante queda registrada en un ADR.
+- Sin copy-paste; reutilizar patrones existentes.
+- La IA se usa como asistente de desarrollo, no como sustituto del criterio técnico.
 
 ---
 
-## Goal
+## Estado actual
 
-Build a backend that could realistically be presented during a technical interview.
+- **Sprint actual:** 8 — Testing & Hardening
+- **Sprints completados:** 0–7 (setup, auth, habits, tasks, pomodoro, statistics, AI)
+- **Tests:** 154 automatizados; ~91 % cobertura JaCoCo
+- **Migraciones Flyway:** V1–V5
+
+---
+
+## Objetivo
+
+Construir un backend que pueda presentarse con confianza en una entrevista técnica, demostrando prácticas de ingeniería de software en entornos reales.
+
+---
+
+## Referencias
+
+- [AGENTS.md](../AGENTS.md) — documento maestro
+- [ROADMAP.md](ROADMAP.md) — fases del proyecto
+- [SPRINTS.md](SPRINTS.md) — planificación por sprints
+- [sessions/CHANGELOG.md](sessions/CHANGELOG.md) — Development Log

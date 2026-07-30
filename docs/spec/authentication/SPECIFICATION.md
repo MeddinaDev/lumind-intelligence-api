@@ -1,12 +1,12 @@
 # Especificación técnica — Autenticación (Sprint 2)
 
-Documento de diseño aprobado. **Pendiente de implementación** según plan del Sprint 2.
+Documento de diseño **implementado** (Sprint 2 completado).
 
 | Campo | Valor |
 |-------|-------|
 | Sprint | 2 — Authentication |
 | Fase roadmap | Fase 2 — Authentication (JWT) + Users |
-| Estado | Aprobada (2026-07-06) |
+| Estado | Implementada (2026-07-06 diseño; 2026-07-26 cierre Sprint 2) |
 | Versión API | `v1` |
 | Base path | `/api/v1/auth` |
 
@@ -723,27 +723,34 @@ jwt:
 | 0 | ADRs 003/004, dependencias JJWT, configuración JWT | ✅ Completada |
 | 1 | Capa común (`ErrorResponse`, excepciones, `GlobalExceptionHandler`) | ✅ Completada |
 | 2 | Persistencia (`User`, migraciones Flyway) | ✅ Completada |
-| 3 | Infraestructura JWT (`JwtProperties`, `JwtService`) | ⏳ Pendiente |
-| 4 | Refresh tokens (`RefreshToken`, rotación) | ⏳ Pendiente |
-| 5 | Lógica de negocio (`AuthService`) | ⏳ Pendiente |
-| 6 | Seguridad (`JwtAuthenticationFilter`, `SecurityConfig`) | ⏳ Pendiente |
-| 7 | API y documentación OpenAPI | ⏳ Pendiente |
-| 8 | Tests | ⏳ Pendiente |
-| 9 | Cierre del sprint | ⏳ Pendiente |
+| 3 | Infraestructura JWT (`JwtProperties`, `JwtService`) | ✅ Completada |
+| 4 | Refresh tokens (`RefreshToken`, rotación) | ✅ Completada |
+| 5 | Lógica de negocio (`AuthService`) | ✅ Completada |
+| 6 | Seguridad (`JwtAuthenticationFilter`, `SecurityConfig`) | ✅ Completada |
+| 7 | API y documentación OpenAPI | ✅ Completada |
+| 8 | Tests | ✅ Completada |
+| 9 | Cierre del sprint | ✅ Completada |
 
 ### Checklist
 
-- [ ] Endpoints register, login y refresh funcionan según esta spec.
-- [ ] HTTP Basic eliminado; JWT Bearer operativo en rutas protegidas.
-- [ ] Migraciones Flyway para `users` y `refresh_tokens`.
-- [ ] Contraseñas hasheadas con BCrypt.
-- [ ] Validaciones Bean Validation activas.
-- [ ] `GlobalExceptionHandler` devuelve `ErrorResponse` consistente.
-- [ ] Swagger documenta auth con esquema Bearer.
-- [ ] Tests unitarios de `AuthService` (registro, login, credenciales inválidas, email duplicado).
-- [ ] Tests de integración de endpoints auth (MockMvc).
-- [ ] Sin warnings de compilación.
-- [x] ADRs `003-security-strategy.md` y `004-jwt.md` completados (Fase 0).
+- [x] Endpoints register, login y refresh funcionan según esta spec.
+- [x] HTTP Basic eliminado; JWT Bearer operativo en rutas protegidas.
+- [x] Migraciones Flyway para `users` y `refresh_tokens`.
+- [x] Contraseñas hasheadas con BCrypt.
+- [x] Validaciones Bean Validation activas.
+- [x] `GlobalExceptionHandler` devuelve `ErrorResponse` consistente.
+- [x] Swagger documenta auth con esquema Bearer.
+- [x] Tests unitarios de `AuthService`.
+- [x] Tests de integración de endpoints auth (MockMvc).
+- [x] Sin warnings de compilación.
+- [x] ADRs `003-security-strategy.md` y `004-jwt.md` completados.
+
+### Deuda técnica aceptada
+
+- Sin endpoint logout / revocación explícita de refresh tokens desde cliente.
+- Sin rate limiting en login/register.
+- Sin blacklist de access tokens (TTL 15 min mitiga riesgo).
+- Acumulación de refresh tokens sin job de limpieza programada.
 
 ---
 
@@ -762,7 +769,7 @@ jwt:
 
 ## 17. Referencias
 
-- [AGENTS.md](../../AGENTS.md) — arquitectura, estándares, quality gate
+- [AGENTS.md](../../../AGENTS.md) — arquitectura, estándares, quality gate
 - [docs/ROADMAP.md](../../ROADMAP.md) — Fase 2: Authentication (JWT)
 - [docs/SPRINTS.md](../../SPRINTS.md) — Sprint 2: Authentication
 - [docs/architecture/ARCHITECTURE.md](../../architecture/ARCHITECTURE.md) — arquitectura por features
@@ -778,4 +785,4 @@ jwt:
 | 0.1.0 | 2026-07-06 | — | Borrador inicial para revisión |
 | 1.0.0 | 2026-07-06 | — | Aprobada; decisiones D-01 a D-06 confirmadas |
 | 1.0.1 | 2026-07-06 | — | Fase 0 completada; progreso por fases añadido en §15 |
-| 1.0.2 | 2026-07-06 | — | Fases 1 y 2 completadas; numeración Flyway V1/V2 confirmada |
+| 1.0.3 | 2026-07-30 | — | Marcada como implementada; checklist y deuda técnica actualizados (Fase 41) |

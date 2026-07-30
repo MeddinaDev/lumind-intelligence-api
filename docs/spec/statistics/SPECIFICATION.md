@@ -1,12 +1,12 @@
 # Especificación técnica — Productivity Statistics (Sprint 6)
 
-Documento de diseño — **Fase 25**. Pendiente de aprobación e implementación.
+Documento de diseño **implementado** (Sprint 6 completado).
 
 | Campo | Valor |
 |-------|-------|
 | Sprint | 6 — Statistics |
 | Fase roadmap | Fase 6 — Productivity Statistics |
-| Estado | Diseño (2026-07-26) |
+| Estado | Implementada (2026-07-26) |
 | Versión API | `v1` |
 | Base path | `/api/v1/statistics` |
 
@@ -317,24 +317,32 @@ statistics/
 
 ---
 
-## 7. Decisiones arquitectónicas — ADR propuestos (no creados en Fase 25)
+## 7. Decisiones arquitectónicas — ADRs
 
-| ADR propuesto | Tema | Motivo |
-|---------------|------|--------|
-| **007-statistics-read-model.md** | Statistics como agregación read-only sin persistencia propia | Evitar duplicación de datos; fijar que Sprint 6 calcula en consulta vía JPQL en `statistics.repository`. |
-| **008-statistics-period-semantics.md** | Semántica temporal UTC y campos por entidad | Clarificar uso de `updatedAt` como proxy de completado en Task; límites de periodo; días UTC en tendencias. |
+| ADR | Tema | Enlace |
+|-----|------|--------|
+| **007** | Statistics como read model read-only | [007-statistics-read-model.md](../../decisions/007-statistics-read-model.md) |
+| **008** | Semántica temporal UTC y proxies | [008-temporal-semantics.md](../../decisions/008-temporal-semantics.md) |
+
+### Deuda técnica aceptada
+
+- JPQL cross-feature sobre entidades `Task`, `Habit`, `PomodoroSession` (acoplamiento de lectura documentado en ADR 007).
+- `updatedAt` como proxy de fecha de completado en Task (sin campo `completedAt`).
+- Agrupación diaria dependiente de timezone JVM/Hibernate.
+- Índices compuestos por rango de fechas pendientes de optimización.
+- Sin paginación ni caché de agregaciones.
 
 ---
 
-## 8. Plan de implementación sugerido (fases posteriores)
+## 8. Plan de implementación (completado)
 
-| Fase | Contenido |
-|------|-----------|
-| 26 | `ProductivityStatisticsRepository` + queries JPQL |
-| 27 | `ProductivityStatisticsService` + reglas de periodo |
-| 28 | `StatisticsController` + DTOs + OpenAPI |
-| 29 | Excepciones + integración `GlobalExceptionHandler` |
-| 30 | Tests unitarios e integración MockMvc |
+| Fase | Contenido | Estado |
+|------|-----------|--------|
+| 26 | `ProductivityStatisticsRepository` + queries JPQL | ✅ |
+| 27 | `ProductivityStatisticsService` + reglas de periodo | ✅ |
+| 28 | `StatisticsController` + DTOs + OpenAPI | ✅ |
+| 29 | Excepciones + integración `GlobalExceptionHandler` | ✅ |
+| 30 | Tests unitarios e integración MockMvc | ✅ |
 
 ---
 
@@ -342,5 +350,5 @@ statistics/
 
 - [docs/ROADMAP.md](../../ROADMAP.md) — Fase 6
 - [docs/SPRINTS.md](../../SPRINTS.md) — Sprint 6
-- [docs/decisions/001-feature-based-architecture.md](../../decisions/001-feature-based-architecture.md)
-- Módulos existentes: `habit`, `task`, `pomodoro`, `user`, `auth`
+- [docs/decisions/007-statistics-read-model.md](../../decisions/007-statistics-read-model.md)
+- [docs/decisions/008-temporal-semantics.md](../../decisions/008-temporal-semantics.md)
