@@ -1126,3 +1126,30 @@ Cerrar oficialmente el Sprint AI Productivity Analysis: revisión técnica, veri
 
 ### Próximo paso
 Sprint 8 — Testing & Hardening.
+
+---
+
+## 2026-07-30 — Fase 40
+
+### Sprint
+Sprint 8 - Testing & Hardening
+
+### Objetivo
+Eliminar deuda técnica crítica del módulo AI y Pomodoro sin introducir nuevas funcionalidades ni cambios de arquitectura.
+
+### Cambios realizados
+- Eliminado `@Transactional(readOnly = true)` de `ProductivityAnalysisService.analyze()` para no retener conexión de base de datos durante la llamada al proveedor LLM.
+- Sustituido `IllegalStateException` por `AiResponseInvalidException` en el parseo de respuesta del modelo IA; `GlobalExceptionHandler` devuelve HTTP 502 alineado con OpenAPI y la especificación.
+- Añadida Bean Validation (`@Min(0)`, `@Max(180)`) a `UpdatePomodoroSessionRequest`, coherente con los límites de `CreatePomodoroSessionRequest`.
+- Actualizados tests unitarios de `ProductivityAnalysisServiceTest` para verificar `AiResponseInvalidException`.
+
+### Decisiones tomadas
+- Sin cambios en reglas de negocio de Pomodoro; validación solo en campos presentes del PATCH.
+- Sin Testcontainers, CI/CD, logout, Gemini HTTP real ni actualización documental global (reservado para Fase 41).
+- Las lecturas de estadísticas siguen transaccionales en `ProductivityStatisticsService`; solo se desacopla la transacción de la llamada LLM.
+
+### Estado del proyecto
+🔄 Sprint 8 en curso — Fase 40 (Hardening de código) completada.
+
+### Próximo paso
+Fase 41 — actualización documental global (AGENTS.md, README, specs, ADRs).

@@ -6,6 +6,7 @@ import com.lumind.api.ai.dto.response.ProductivityAnalysisResponse;
 import com.lumind.api.ai.exception.AiConfigurationException;
 import com.lumind.api.ai.exception.AiRateLimitExceededException;
 import com.lumind.api.ai.exception.AiRequestTimeoutException;
+import com.lumind.api.ai.exception.AiResponseInvalidException;
 import com.lumind.api.ai.exception.AiServiceUnavailableException;
 import com.lumind.api.ai.prompt.ProductivityAnalysisPromptBuilder;
 import com.lumind.api.ai.prompt.model.ProductivityAnalysisPromptInput;
@@ -151,7 +152,7 @@ class ProductivityAnalysisServiceTest {
     }
 
     @Test
-    void analyze_invalidJson_throwsIllegalStateException() {
+    void analyze_invalidJson_throwsAiResponseInvalidException() {
         ProductivityAnalysisRequest request = ProductivityAnalysisTestData.customPeriodRequest();
         stubStatisticsResponses(ProductivityAnalysisTestData.sampleOverview());
         when(productivityAnalysisPromptBuilder.build(any())).thenReturn("prompt");
@@ -159,12 +160,11 @@ class ProductivityAnalysisServiceTest {
                 .thenReturn(ProductivityAnalysisTestData.INVALID_MODEL_JSON);
 
         assertThatThrownBy(() -> productivityAnalysisService.analyze(userId, request))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("not valid JSON");
+                .isInstanceOf(AiResponseInvalidException.class);
     }
 
     @Test
-    void analyze_incompleteResponse_throwsIllegalStateException() {
+    void analyze_incompleteResponse_throwsAiResponseInvalidException() {
         ProductivityAnalysisRequest request = ProductivityAnalysisTestData.customPeriodRequest();
         stubStatisticsResponses(ProductivityAnalysisTestData.sampleOverview());
         when(productivityAnalysisPromptBuilder.build(any())).thenReturn("prompt");
@@ -172,8 +172,7 @@ class ProductivityAnalysisServiceTest {
                 .thenReturn(ProductivityAnalysisTestData.INCOMPLETE_MODEL_JSON);
 
         assertThatThrownBy(() -> productivityAnalysisService.analyze(userId, request))
-                .isInstanceOf(IllegalStateException.class)
-                .hasMessageContaining("insights");
+                .isInstanceOf(AiResponseInvalidException.class);
     }
 
     @Test

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.lumind.api.ai.client.AiLanguageModelClient;
 import com.lumind.api.ai.dto.request.ProductivityAnalysisRequest;
 import com.lumind.api.ai.dto.response.ProductivityAnalysisResponse;
+import com.lumind.api.ai.exception.AiResponseInvalidException;
 import com.lumind.api.ai.prompt.ProductivityAnalysisPromptBuilder;
 import com.lumind.api.ai.prompt.model.ProductivityAnalysisPromptInput;
 import com.lumind.api.statistics.dto.request.StatisticsPeriodQuery;
@@ -15,7 +16,6 @@ import com.lumind.api.statistics.dto.response.ProductivityOverviewResponse;
 import com.lumind.api.statistics.dto.response.TaskStatisticsResponse;
 import com.lumind.api.statistics.service.ProductivityStatisticsService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
 
 import java.time.Instant;
@@ -42,7 +42,6 @@ public class ProductivityAnalysisService {
         this.aiLanguageModelClient = aiLanguageModelClient;
     }
 
-    @Transactional(readOnly = true)
     public ProductivityAnalysisResponse analyze(UUID userId, ProductivityAnalysisRequest request) {
         StatisticsPeriodQuery periodQuery = toStatisticsPeriodQuery(request);
 
@@ -80,7 +79,7 @@ public class ProductivityAnalysisService {
 
     private ParsedAnalysis parseRawModelResponse(String rawModelResponse) {
         if (!StringUtils.hasText(rawModelResponse)) {
-            throw new IllegalStateException("AI model response is empty");
+            throw new AiResponseInvalidException();
         }
 
         ObjectMapper objectMapper = JsonMapper.builder().build();
@@ -92,22 +91,22 @@ public class ProductivityAnalysisService {
             List<String> recommendations = readRequiredStringList(root, "recommendations");
 
             return new ParsedAnalysis(summary, insights, recommendations);
-        } catch (IllegalStateException ex) {
+        } catch (AiResponseInvalidException ex) {
             throw ex;
         } catch (Exception ex) {
-            throw new IllegalStateException("AI model response is not valid JSON", ex);
+            throw new AiResponseInvalidException();
         }
     }
 
     private String readRequiredText(JsonNode root, String fieldName) {
         JsonNode node = root.get(fieldName);
         if (node == null || node.isNull() || !node.isTextual()) {
-            throw new IllegalStateException("AI model response field '" + fieldName + "' is missing or invalid");
+            throw new AiResponseInvalidException();
         }
 
         String value = node.asText().trim();
         if (!StringUtils.hasText(value)) {
-            throw new IllegalStateException("AI model response field '" + fieldName + "' is empty");
+            throw new AiResponseInvalidException();
         }
 
         return value;
@@ -116,18 +115,18 @@ public class ProductivityAnalysisService {
     private List<String> readRequiredStringList(JsonNode root, String fieldName) {
         JsonNode node = root.get(fieldName);
         if (node == null || node.isNull() || !node.isArray() || node.isEmpty()) {
-            throw new IllegalStateException("AI model response field '" + fieldName + "' is missing or empty");
+            throw new AiResponseInvalidException();
         }
 
         List<String> values = new ArrayList<>();
         for (JsonNode item : node) {
             if (!item.isTextual()) {
-                throw new IllegalStateException("AI model response field '" + fieldName + "' contains non-text items");
+                throw new AiResponseInvalidException();
             }
 
             String value = item.asText().trim();
             if (!StringUtils.hasText(value)) {
-                throw new IllegalStateException("AI model response field '" + fieldName + "' contains blank items");
+                throw new AiResponseInvalidException();
             }
 
             values.add(value);
