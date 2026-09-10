@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lumind.api.auth.dto.request.LoginRequest;
 import com.lumind.api.auth.dto.request.RegisterRequest;
 import com.lumind.api.auth.support.AuthTestData;
+import com.lumind.api.support.AbstractIntegrationTest;
 import com.lumind.api.user.entity.User;
 import com.lumind.api.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
-class AuthControllerIntegrationTest {
+class AuthControllerIntegrationTest extends AbstractIntegrationTest {
 
     private static final String REGISTER_URL = "/api/v1/auth/register";
     private static final String LOGIN_URL = "/api/v1/auth/login";

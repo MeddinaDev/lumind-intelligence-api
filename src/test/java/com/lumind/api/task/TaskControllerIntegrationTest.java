@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lumind.api.auth.dto.request.RegisterRequest;
 import com.lumind.api.auth.support.AuthTestData;
+import com.lumind.api.support.AbstractIntegrationTest;
 import com.lumind.api.task.dto.request.CreateTaskRequest;
 import com.lumind.api.task.dto.request.UpdateTaskRequest;
 import com.lumind.api.task.repository.TaskRepository;
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
-class TaskControllerIntegrationTest {
+class TaskControllerIntegrationTest extends AbstractIntegrationTest {
 
     private static final String REGISTER_URL = "/api/v1/auth/register";
     private static final String TASKS_URL = "/api/v1/tasks";

@@ -8,6 +8,7 @@ import com.lumind.api.habit.dto.request.CreateHabitRequest;
 import com.lumind.api.habit.dto.request.UpdateHabitRequest;
 import com.lumind.api.habit.repository.HabitRepository;
 import com.lumind.api.habit.support.HabitTestData;
+import com.lumind.api.support.AbstractIntegrationTest;
 import com.lumind.api.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,7 +37,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
-class HabitControllerIntegrationTest {
+class HabitControllerIntegrationTest extends AbstractIntegrationTest {
 
     private static final String REGISTER_URL = "/api/v1/auth/register";
     private static final String HABITS_URL = "/api/v1/habits";

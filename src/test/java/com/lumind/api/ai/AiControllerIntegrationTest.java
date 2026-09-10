@@ -19,6 +19,7 @@ import com.lumind.api.pomodoro.dto.request.UpdatePomodoroSessionRequest;
 import com.lumind.api.pomodoro.repository.PomodoroSessionRepository;
 import com.lumind.api.pomodoro.support.PomodoroSessionTestData;
 import com.lumind.api.statistics.support.ProductivityStatisticsTestData;
+import com.lumind.api.support.AbstractIntegrationTest;
 import com.lumind.api.task.dto.request.CreateTaskRequest;
 import com.lumind.api.task.dto.request.UpdateTaskRequest;
 import com.lumind.api.task.repository.TaskRepository;
@@ -52,7 +53,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
-class AiControllerIntegrationTest {
+class AiControllerIntegrationTest extends AbstractIntegrationTest {
 
     private static final String REGISTER_URL = "/api/v1/auth/register";
     private static final String AI_ANALYSIS_URL = "/api/v1/ai/productivity-analysis";

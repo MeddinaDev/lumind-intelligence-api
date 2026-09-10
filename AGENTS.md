@@ -69,9 +69,9 @@ Lumind es una plataforma de productividad impulsada por IA. El objetivo es const
 | Flyway | ✅ Migraciones V1–V5 (users, refresh_tokens, habits, tasks, pomodoro_sessions) |
 | Tests | ✅ 154 tests automatizados; ~91 % cobertura JaCoCo (instrucciones) |
 | Docker | ⏳ Planificado; sin `Dockerfile` ni `docker-compose` |
-| CI/CD | ⏳ Planificado; sin pipeline GitHub Actions |
+| CI/CD | ✅ GitHub Actions (`mvn clean verify` + gate JaCoCo) |
 
-La autenticación JWT está operativa: servicios, filtro, endpoints y tests en producción de código. Deuda técnica aceptada documentada en specs y ADRs (logout, Gemini HTTP real, Testcontainers).
+La autenticación JWT está operativa: servicios, filtro, endpoints y tests en producción de código. Deuda técnica aceptada documentada en specs y ADRs (logout, Gemini HTTP real).
 
 ---
 
@@ -89,6 +89,8 @@ La autenticación JWT está operativa: servicios, filtro, endpoints y tests en p
 - MapStruct
 - Lombok
 - JUnit 5 + Mockito + MockMvc (154 tests)
+- Testcontainers PostgreSQL (tests de integración)
+- GitHub Actions CI + gate JaCoCo en `mvn verify`
 - Spring Boot Actuator
 - JJWT 0.13.0
 - JaCoCo (~91 % cobertura global)
@@ -96,8 +98,6 @@ La autenticación JWT está operativa: servicios, filtro, endpoints y tests en p
 
 ### Pendiente de implementación (Sprint 8+)
 
-- Testcontainers PostgreSQL en tests de integración
-- CI/CD con gate JaCoCo
 - Logout / revocación explícita de refresh tokens
 - Gemini HTTP real (sustituir stub)
 - Docker

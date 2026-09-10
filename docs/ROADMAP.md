@@ -42,8 +42,8 @@
 - Auditoría técnica (Fase 39)
 - Hardening de código (Fase 40)
 - Sincronización documental (Fase 41)
-- Testcontainers PostgreSQL (Fase 42 — planificado)
-- CI/CD + gate JaCoCo (planificado)
+- Testcontainers PostgreSQL (Fase 42 ✅)
+- CI/CD + gate JaCoCo (Fase 43 ✅)
 - Logout / gestión avanzada de sesiones (planificado)
 
 ## Phase 9 — Documentation ⏳

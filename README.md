@@ -101,9 +101,11 @@ mvn spring-boot:run
 > **Nota:** `JWT_SECRET` es obligatorio. Copia [`.env.example`](.env.example) a `.env` o exporta las variables en tu shell.
 
 ```bash
-mvn clean verify   # Compilar, tests (154) y reporte JaCoCo
+mvn clean verify   # Compilar, tests (154), reporte JaCoCo y quality gate
 mvn package        # Compilar y empaquetar
 ```
+
+CI: GitHub Actions ejecuta `mvn clean verify` en cada push y pull request (Java 21, Testcontainers PostgreSQL).
 
 ## Endpoints de API
 

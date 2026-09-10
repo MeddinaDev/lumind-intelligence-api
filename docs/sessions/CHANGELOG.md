@@ -1185,3 +1185,62 @@ Sincronizar toda la documentación con el estado real del proyecto tras el cierr
 
 ### Próximo paso
 Fase 42 — Testcontainers PostgreSQL en tests de integración.
+
+---
+
+## 2026-07-30 — Fase 42
+
+### Sprint
+Sprint 8 - Testing & Hardening
+
+### Objetivo
+Sustituir la infraestructura de tests de integración basada en H2 por PostgreSQL real mediante Testcontainers, alineando el esquema de test con producción (Flyway), sin modificar comportamiento funcional.
+
+### Cambios realizados
+- Añadidas dependencias `spring-boot-testcontainers`, `testcontainers-junit-jupiter` y `testcontainers-postgresql`.
+- Eliminada dependencia `h2` del scope test.
+- Creada `AbstractIntegrationTest` con contenedor PostgreSQL 16 reutilizable y `@DynamicPropertySource`.
+- Actualizados los 6 tests de integración para extender la clase base.
+- Actualizado `application-test.yml`: Flyway habilitado, `ddl-auto: validate`, sin configuración H2.
+- Añadido `testcontainers.properties` con `reuse.enable=true`.
+
+### Decisiones tomadas
+- Contenedor estático compartido por todos los `@SpringBootTest` de integración en la misma JVM.
+- Esquema generado exclusivamente por migraciones Flyway V1–V5 (paridad con producción).
+- Tests unitarios (Mockito) sin cambios; no requieren contenedor.
+- Sin modificaciones en código de producción, endpoints, DTOs, services ni controllers.
+
+### Estado del proyecto
+🔄 Sprint 8 en curso — Fase 42 (Testcontainers) completada.
+
+### Próximo paso
+Fase 43 — GitHub Actions + Quality Gate (CI/CD y umbral JaCoCo).
+
+---
+
+## 2026-09-10 — Fase 43
+
+### Sprint
+Sprint 8 - Testing & Hardening
+
+### Objetivo
+Implementar CI con GitHub Actions y un quality gate JaCoCo integrado en `mvn verify`, validando compilación, tests unitarios e integración (Testcontainers PostgreSQL + Flyway) y cobertura mínima.
+
+### Cambios realizados
+- Creado workflow `.github/workflows/ci.yml` (push, pull_request, `ubuntu-latest`, Java 21, cache Maven, `mvn clean verify -B`).
+- Añadida ejecución `jacoco:check` en fase `verify` con umbrales globales: **80 %** instructions, **50 %** branches.
+- Propiedades Maven `jacoco.minimum.instruction.ratio` y `jacoco.minimum.branch.ratio` para mantenimiento del gate.
+- Actualizados `AGENTS.md` y `README.md` (estado CI/CD).
+
+### Decisiones tomadas
+- Sin Docker-in-Docker ni secretos en CI; Testcontainers usa el daemon del runner `ubuntu-latest`.
+- Sin exclusiones artificiales en JaCoCo; el gate refleja cobertura global tras los 154 tests.
+- Umbrales por debajo del baseline actual (~91 % / ~56 %) para margen sin inflar cobertura.
+- Sin cambios en lógica de negocio, `AbstractIntegrationTest` ni reintroducción de H2.
+
+### Estado del proyecto
+🔄 Sprint 8 en curso — Fase 43 (CI + Quality Gate) completada.
+
+### Próximo paso
+Cierre Sprint 8 o fases opcionales de hardening (logout, Gemini HTTP, helpers de integración compartidos).
+

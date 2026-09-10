@@ -8,6 +8,7 @@ import com.lumind.api.pomodoro.dto.request.CreatePomodoroSessionRequest;
 import com.lumind.api.pomodoro.dto.request.UpdatePomodoroSessionRequest;
 import com.lumind.api.pomodoro.repository.PomodoroSessionRepository;
 import com.lumind.api.pomodoro.support.PomodoroSessionTestData;
+import com.lumind.api.support.AbstractIntegrationTest;
 import com.lumind.api.user.repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -37,7 +38,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
 @Transactional
-class PomodoroSessionControllerIntegrationTest {
+class PomodoroSessionControllerIntegrationTest extends AbstractIntegrationTest {
 
     private static final String REGISTER_URL = "/api/v1/auth/register";
     private static final String POMODORO_SESSIONS_URL = "/api/v1/pomodoro-sessions";
