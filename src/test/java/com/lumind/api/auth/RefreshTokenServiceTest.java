@@ -100,7 +100,7 @@ class RefreshTokenServiceTest {
     }
 
     @Test
-    void rotate_revokedRefreshToken_throwsInvalidRefreshTokenException() {
+    void rotate_revokedRefreshToken_revokesAllActiveSessionsAndThrowsInvalidRefreshTokenException() {
         RefreshToken stored = AuthTestData.storedRefreshToken(user, RAW_REFRESH_TOKEN, true);
 
         when(jwtService.parseAndValidateRefreshToken(RAW_REFRESH_TOKEN)).thenReturn(refreshClaims);
@@ -110,6 +110,7 @@ class RefreshTokenServiceTest {
         assertThatThrownBy(() -> refreshTokenService.rotate(RAW_REFRESH_TOKEN))
                 .isInstanceOf(InvalidRefreshTokenException.class);
 
+        verify(refreshTokenRepository).revokeAllActiveByUserId(user.getId());
         verify(refreshTokenRepository, never()).save(any());
     }
 
@@ -175,6 +176,54 @@ class RefreshTokenServiceTest {
 
         assertThatThrownBy(() -> refreshTokenService.rotate(RAW_REFRESH_TOKEN))
                 .isInstanceOf(InvalidRefreshTokenException.class);
+    }
+
+    @Test
+    void revoke_validActiveRefreshToken_marksTokenRevoked() {
+        RefreshToken stored = AuthTestData.storedRefreshToken(user, RAW_REFRESH_TOKEN, false);
+
+        when(jwtService.parseAndValidateRefreshToken(RAW_REFRESH_TOKEN)).thenReturn(refreshClaims);
+        when(refreshTokenRepository.findByToken(Sha256Hasher.hashToHex(RAW_REFRESH_TOKEN)))
+                .thenReturn(Optional.of(stored));
+
+        refreshTokenService.revoke(RAW_REFRESH_TOKEN);
+
+        assertThat(stored.isRevoked()).isTrue();
+        verify(refreshTokenRepository).save(stored);
+    }
+
+    @Test
+    void revoke_alreadyRevokedRefreshToken_isIdempotent() {
+        RefreshToken stored = AuthTestData.storedRefreshToken(user, RAW_REFRESH_TOKEN, true);
+
+        when(jwtService.parseAndValidateRefreshToken(RAW_REFRESH_TOKEN)).thenReturn(refreshClaims);
+        when(refreshTokenRepository.findByToken(Sha256Hasher.hashToHex(RAW_REFRESH_TOKEN)))
+                .thenReturn(Optional.of(stored));
+
+        refreshTokenService.revoke(RAW_REFRESH_TOKEN);
+
+        verify(refreshTokenRepository, never()).save(any());
+    }
+
+    @Test
+    void revoke_unknownRefreshToken_isIdempotent() {
+        when(jwtService.parseAndValidateRefreshToken(RAW_REFRESH_TOKEN)).thenReturn(refreshClaims);
+        when(refreshTokenRepository.findByToken(Sha256Hasher.hashToHex(RAW_REFRESH_TOKEN)))
+                .thenReturn(Optional.empty());
+
+        refreshTokenService.revoke(RAW_REFRESH_TOKEN);
+
+        verify(refreshTokenRepository, never()).save(any());
+    }
+
+    @Test
+    void revoke_invalidJwt_isIdempotent() {
+        when(jwtService.parseAndValidateRefreshToken(RAW_REFRESH_TOKEN))
+                .thenThrow(new JwtException("invalid token"));
+
+        refreshTokenService.revoke(RAW_REFRESH_TOKEN);
+
+        verify(refreshTokenRepository, never()).findByToken(any());
     }
 
     @Test

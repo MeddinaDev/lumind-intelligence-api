@@ -116,10 +116,11 @@ class JwtServiceTest {
 
     @Test
     void parseAndValidateAccessToken_rejectsInvalidSignature() {
-        String token = jwtService.generateAccessToken(user);
-        String tamperedToken = token.substring(0, token.length() - 1) + (token.endsWith("a") ? "b" : "a");
+        String tokenSignedWithDifferentSecret = signAccessTokenWithSecret(
+                AuthTestData.alternateSecretJwtProperties().secret()
+        );
 
-        assertThatThrownBy(() -> jwtService.parseAndValidateAccessToken(tamperedToken))
+        assertThatThrownBy(() -> jwtService.parseAndValidateAccessToken(tokenSignedWithDifferentSecret))
                 .isInstanceOf(JwtException.class);
     }
 
@@ -146,6 +147,23 @@ class JwtServiceTest {
         return Jwts.builder()
                 .subject(user.getId().toString())
                 .issuer(issuer)
+                .issuedAt(Date.from(now))
+                .expiration(Date.from(now.plusSeconds(properties.accessTokenExpiration())))
+                .signWith(signingKey)
+                .compact();
+    }
+
+    private String signAccessTokenWithSecret(String base64Secret) {
+        JwtProperties properties = AuthTestData.defaultJwtProperties();
+        SecretKey signingKey = Keys.hmacShaKeyFor(
+                io.jsonwebtoken.io.Decoders.BASE64.decode(base64Secret)
+        );
+        Instant now = Instant.now();
+
+        return Jwts.builder()
+                .subject(user.getId().toString())
+                .claim("email", user.getEmail())
+                .issuer(properties.issuer())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusSeconds(properties.accessTokenExpiration())))
                 .signWith(signingKey)

@@ -37,6 +37,11 @@ public final class AuthTestData {
         return new JwtProperties(JWT_SECRET, "other-issuer", 900L, 604_800L);
     }
 
+    /** Different 256-bit HMAC secret for signature mismatch tests. */
+    public static JwtProperties alternateSecretJwtProperties() {
+        return new JwtProperties("QUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVoxMjM0NTY=", JWT_ISSUER, 900L, 604_800L);
+    }
+
     public static User activeUser() {
         return activeUser(TEST_EMAIL);
     }

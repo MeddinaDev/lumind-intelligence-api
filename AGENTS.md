@@ -60,18 +60,18 @@ Lumind es una plataforma de productividad impulsada por IA. El objetivo es const
 
 | Área | Estado |
 |------|--------|
-| Authentication | ✅ JWT operativo (register, login, refresh, filtro Bearer) |
+| Authentication | ✅ JWT operativo (register, login, refresh, logout, rotación refresh, filtro Bearer) |
 | Habit / Task / Pomodoro | ✅ CRUD REST completo con ownership por usuario |
 | Statistics | ✅ Métricas read-only bajo `/api/v1/statistics` |
 | AI | ✅ Análisis de productividad; `GeminiClient` en stub (HTTP real pendiente) |
 | User | 🔄 Entidad + repository; sin endpoints de perfil |
 | Seguridad | ✅ JWT Bearer (`SecurityConfig` stateless); HTTP Basic eliminado |
 | Flyway | ✅ Migraciones V1–V5 (users, refresh_tokens, habits, tasks, pomodoro_sessions) |
-| Tests | ✅ 154 tests automatizados; ~91 % cobertura JaCoCo (instrucciones) |
+| Tests | ✅ 166 tests automatizados; ~91 % cobertura JaCoCo (instrucciones) |
 | Docker | ⏳ Planificado; sin `Dockerfile` ni `docker-compose` |
 | CI/CD | ✅ GitHub Actions (`mvn clean verify` + gate JaCoCo) |
 
-La autenticación JWT está operativa: servicios, filtro, endpoints y tests en producción de código. Deuda técnica aceptada documentada en specs y ADRs (logout, Gemini HTTP real).
+La autenticación JWT está operativa: servicios, filtro, endpoints y tests en producción de código. Deuda técnica aceptada documentada en specs y ADRs (limpieza batch de refresh tokens, Gemini HTTP real).
 
 ---
 
@@ -98,7 +98,7 @@ La autenticación JWT está operativa: servicios, filtro, endpoints y tests en p
 
 ### Pendiente de implementación (Sprint 8+)
 
-- Logout / revocación explícita de refresh tokens
+- Limpieza programada de refresh tokens expirados/revocados en BD
 - Gemini HTTP real (sustituir stub)
 - Docker
 

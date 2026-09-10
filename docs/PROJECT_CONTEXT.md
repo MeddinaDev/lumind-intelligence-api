@@ -14,7 +14,7 @@ El objetivo es simular el desarrollo de un backend de producción presentable en
 
 | Feature | Estado | Descripción |
 |---------|--------|-------------|
-| Autenticación JWT | ✅ | Registro, login, refresh con rotación de tokens |
+| Autenticación JWT | ✅ | Registro, login, refresh con rotación, logout, detección de reuse |
 | Usuarios | 🔄 | Entidad y persistencia; perfil sin API pública aún |
 | Hábitos | ✅ | CRUD REST con ownership por usuario |
 | Tareas | ✅ | CRUD REST con estado completado |
@@ -57,7 +57,7 @@ El objetivo es simular el desarrollo de un backend de producción presentable en
 
 - **Sprint actual:** 8 — Testing & Hardening
 - **Sprints completados:** 0–7 (setup, auth, habits, tasks, pomodoro, statistics, AI)
-- **Tests:** 154 automatizados; ~91 % cobertura JaCoCo
+- **Tests:** 166 automatizados; ~91 % cobertura JaCoCo
 - **Migraciones Flyway:** V1–V5
 
 ---

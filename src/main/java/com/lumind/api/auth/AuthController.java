@@ -66,4 +66,23 @@ public class AuthController {
     public ResponseEntity<AuthResponse> refresh(@Valid @RequestBody RefreshTokenRequest request) {
         return ResponseEntity.ok(authService.refresh(request));
     }
+
+    @Operation(
+            summary = "Logout",
+            description = """
+                    Invalidates the presented refresh token so it cannot be used for further token refresh.
+                    The current access token remains valid until its expiration (stateless JWT).
+                    Repeating logout with the same or an already-invalidated refresh token is safe (idempotent).
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "Logout completed"),
+            @ApiResponse(responseCode = "400", description = "Validation failed or malformed request"),
+            @ApiResponse(responseCode = "500", description = "Unexpected server error")
+    })
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(@Valid @RequestBody RefreshTokenRequest request) {
+        authService.logout(request);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -1244,3 +1244,32 @@ Implementar CI con GitHub Actions y un quality gate JaCoCo integrado en `mvn ver
 ### Próximo paso
 Cierre Sprint 8 o fases opcionales de hardening (logout, Gemini HTTP, helpers de integración compartidos).
 
+---
+
+## 2026-09-10 — Fase 44
+
+### Sprint
+Sprint 8 - Testing & Hardening
+
+### Objetivo
+Endurecer la gestión de sesiones JWT: logout, rotación/reutilización de refresh tokens, revocación ante reuse detection y cobertura de tests de seguridad, sin rediseñar la autenticación.
+
+### Cambios realizados
+- Añadido `POST /api/v1/auth/logout` (revoca refresh token; idempotente; `204 No Content`).
+- `RefreshTokenService.revoke()` para logout; reuse de refresh revocado revoca todos los refresh activos del usuario.
+- Rotación de refresh token ya existente documentada y reforzada con tests de integración.
+- Test JWT frágil sustituido por verificación con firma HMAC distinta (determinista).
+- Tests unitarios e integración ampliados (logout, rotación, reuse, JWT en filtro).
+- Actualizados spec de autenticación, ADR 004, `AGENTS.md`.
+
+### Decisiones tomadas
+- Access tokens siguen stateless: logout no invalida access token en curso (TTL 15 min).
+- Sin migración Flyway: esquema `refresh_tokens` ya incluye `revoked` y `expires_at`.
+- Limpieza batch de tokens expirados/revocados documentada como deuda técnica (sin scheduler en F44).
+
+### Estado del proyecto
+🔄 Sprint 8 en curso — Fase 44 (Security Hardening) completada.
+
+### Próximo paso
+Cierre Sprint 8 o fases opcionales (Gemini HTTP real, helpers de integración compartidos).
+

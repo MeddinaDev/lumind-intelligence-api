@@ -67,6 +67,7 @@ public class RefreshTokenService {
         if (stored.isRevoked()) {
             UUID userId = stored.getUser().getId();
             log.warn("Revoked refresh token reuse detected for user_id={}", userId);
+            refreshTokenRepository.revokeAllActiveByUserId(userId);
             throw new InvalidRefreshTokenException();
         }
 
@@ -85,6 +86,26 @@ public class RefreshTokenService {
         refreshTokenRepository.save(stored);
 
         return issueTokens(user);
+    }
+
+    /**
+     * Revokes the refresh token session identified by the presented token.
+     * Idempotent: unknown, invalid JWT, or already-revoked tokens are treated as success (no-op).
+     */
+    @Transactional
+    public void revoke(String rawRefreshToken) {
+        try {
+            jwtService.parseAndValidateRefreshToken(rawRefreshToken);
+        } catch (JwtException ex) {
+            return;
+        }
+
+        refreshTokenRepository.findByToken(Sha256Hasher.hashToHex(rawRefreshToken))
+                .filter(stored -> !stored.isRevoked())
+                .ifPresent(stored -> {
+                    stored.setRevoked(true);
+                    refreshTokenRepository.save(stored);
+                });
     }
 
     private Claims parseRefreshClaims(String rawRefreshToken) {

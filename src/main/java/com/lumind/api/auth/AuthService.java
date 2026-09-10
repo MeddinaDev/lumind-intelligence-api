@@ -88,6 +88,15 @@ public class AuthService {
         return response;
     }
 
+    /**
+     * Invalidates the presented refresh token so it cannot be used to obtain new access tokens.
+     * The current access token remains valid until it expires (stateless JWT).
+     */
+    public void logout(RefreshTokenRequest request) {
+        refreshTokenService.revoke(request.refreshToken());
+        log.info("Logout completed (refresh token invalidated if present and active)");
+    }
+
     private AuthResponse buildAuthResponse(User user) {
         return buildAuthResponse(user, refreshTokenService.issueTokens(user));
     }

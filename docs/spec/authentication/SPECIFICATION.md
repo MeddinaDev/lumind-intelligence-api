@@ -26,7 +26,7 @@ Implementar un sistema de autenticación basado en **JWT** que permita a los usu
 | AUTH-02 | Permitir el inicio de sesión con credenciales válidas y devolver tokens JWT. |
 | AUTH-03 | Permitir la renovación de la sesión mediante refresh token. |
 | AUTH-04 | Proteger todos los endpoints de negocio con validación JWT en cada petición. |
-| AUTH-05 | Mantener endpoints públicos únicamente para registro, login, refresh y recursos de infraestructura (Swagger, health). |
+| AUTH-05 | Mantener endpoints públicos únicamente para registro, login, refresh, logout y recursos de infraestructura (Swagger, health). |
 
 ### 1.3 Objetivos no funcionales
 
@@ -78,6 +78,7 @@ El registro **crea** un registro en `users`, pero la persistencia del usuario pe
 | `POST` | `/api/v1/auth/register` | Pública | Registro de nuevo usuario |
 | `POST` | `/api/v1/auth/login` | Pública | Inicio de sesión |
 | `POST` | `/api/v1/auth/refresh` | Pública | Renovación de access token |
+| `POST` | `/api/v1/auth/logout` | Pública | Invalidación del refresh token de la sesión |
 
 ### 2.2 Rutas públicas (sin JWT)
 
@@ -127,6 +128,25 @@ Emite un nuevo par de tokens a partir de un refresh token válido. Implementa **
 **Request body:** `RefreshTokenRequest`
 
 **Response:** `200 OK` — `AuthResponse`
+
+---
+
+#### POST `/api/v1/auth/logout`
+
+Invalida el refresh token presentado para impedir futuras renovaciones de access token.
+
+**Request body:** `RefreshTokenRequest` (mismo DTO que refresh)
+
+**Response:** `204 No Content`
+
+**Semántica de seguridad:**
+
+| Elemento | Comportamiento |
+|----------|----------------|
+| Refresh token enviado | Se marca como revocado en BD (`revoked = true`) si existe y estaba activo |
+| Access token ya emitido | **No** se revoca server-side (JWT stateless); sigue válido hasta `exp` |
+| Repetir logout | Idempotente: token ya revocado o desconocido → `204` sin error |
+| Atacante con access token robado | Puede usar la API hasta que expire el access token (~15 min); no puede renovar sesión sin refresh token válido |
 
 ---
 
@@ -267,7 +287,7 @@ Cada uso válido de un refresh token:
 2. Emite un nuevo access token y un nuevo refresh token.
 3. Persiste el nuevo refresh token.
 
-Si un refresh token ya revocado se reutiliza (posible robo), el sistema debe registrar un evento de seguridad en logs (nivel `WARN`) y rechazar la petición con `401`.
+Si un refresh token ya revocado se reutiliza (posible robo), el sistema debe registrar un evento de seguridad en logs (nivel `WARN`), **revocar todos los refresh tokens activos del usuario** y rechazar la petición con `401`.
 
 ---
 
@@ -429,7 +449,8 @@ Formato estándar de error para toda la API (paquete `common`).
 |----------|-------|------------------|
 | `POST /register` | `201 Created` | `400`, `409`, `500` |
 | `POST /login` | `200 OK` | `400`, `401`, `403`, `500` |
-| `POST /refresh` | `200 OK` | `400`, `401`, `500` |
+| `POST /refresh` | `200 OK` | `400`, `401`, `403`, `500` |
+| `POST /logout` | `204 No Content` | `400`, `500` |
 
 ### 7.2 Uso de códigos en recursos protegidos (contexto)
 
@@ -602,8 +623,14 @@ Los refresh tokens se persisten **hasheados con SHA-256**. El cliente recibe el 
 
 ### 10.7 Logout
 
-- **No implementado en Sprint 2.** Con JWT stateless, el logout es responsabilidad del cliente (eliminar tokens locales).
-- Revocación server-side requeriría blacklist o invalidación masiva de refresh tokens (futuro).
+- **`POST /api/v1/auth/logout`** revoca el refresh token indicado en el body.
+- No existe blacklist de access tokens: el access token actual permanece usable hasta su expiración.
+- El cliente debe descartar localmente access y refresh tokens tras logout.
+
+### 10.7.1 Limpieza de refresh tokens en BD
+
+- Los registros revocados o expirados pueden acumularse en `refresh_tokens`.
+- **Sin job programado en Fase 44** (deuda técnica aceptada): limpieza batch periódica queda para un sprint futuro si el volumen lo justifica.
 
 ### 10.8 Rate limiting
 
@@ -747,10 +774,9 @@ jwt:
 
 ### Deuda técnica aceptada
 
-- Sin endpoint logout / revocación explícita de refresh tokens desde cliente.
 - Sin rate limiting en login/register.
 - Sin blacklist de access tokens (TTL 15 min mitiga riesgo).
-- Acumulación de refresh tokens sin job de limpieza programada.
+- Acumulación de refresh tokens expirados/revocados sin job de limpieza programada.
 
 ---
 

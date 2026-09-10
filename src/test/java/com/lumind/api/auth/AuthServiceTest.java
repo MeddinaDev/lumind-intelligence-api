@@ -214,6 +214,15 @@ class AuthServiceTest {
     }
 
     @Test
+    void logout_delegatesToRefreshTokenServiceRevoke() {
+        RefreshTokenRequest request = new RefreshTokenRequest("refresh-to-revoke");
+
+        authService.logout(request);
+
+        verify(refreshTokenService).revoke(request.refreshToken());
+    }
+
+    @Test
     void refresh_userMissingAfterRotation_throwsInvalidRefreshTokenException() {
         RefreshTokenRequest request = new RefreshTokenRequest("valid-refresh-token");
         Claims claims = org.mockito.Mockito.mock(Claims.class);
