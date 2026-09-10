@@ -1,5 +1,32 @@
 # Development Log
 
+## 2026-09-10 — Fase 46
+
+### Sprint
+Sprint 8 - Testing & Hardening
+
+### Objetivo
+Última pasada técnica antes de la auditoría final (F47): detectar bugs, tests frágiles e inconsistencias sin ampliar funcionalidad.
+
+### Cambios realizados
+- Auditoría de `GlobalExceptionHandler`, `JwtAuthenticationFilter`, ownership en servicios, Flyway V1–V6, configuración y módulo AI (contrato F40/F45).
+- Tests de expiración JWT en `JwtServiceTest` reescritos con tokens firmados ya expirados (sin `Thread.sleep`).
+- Eliminado helper de test `shortLivedJwtProperties()` (ya no usado).
+- Alineados `AGENTS.md`, `README.md` y `PROJECT_CONTEXT.md` con **174** tests (`@Test` en suite actual).
+
+### Decisiones tomadas
+- Sin cambios de contrato API ni nuevas migraciones: el comportamiento auditado se considera correcto salvo fragilidad en tests unitarios JWT.
+- Consulta a BD en cada request autenticado (`JwtAuthenticationFilter` + `UserRepository`) documentada como optimización futura, fuera de alcance F46.
+- PATCH vacío en tareas: no-op aceptado vía MapStruct `IGNORE`; sin validación adicional.
+
+### Estado del proyecto
+🔄 Sprint 8 en curso — Fase 46 (Final Testing & Cleanup) completada; listo para F47.
+
+### Próximo paso
+Fase 47 — auditoría final del sprint/proyecto.
+
+---
+
 ## 2026-09-10 — Fase 45
 
 ### Sprint

@@ -29,10 +29,6 @@ public final class AuthTestData {
         return new JwtProperties(JWT_SECRET, JWT_ISSUER, 900L, 604_800L);
     }
 
-    public static JwtProperties shortLivedJwtProperties() {
-        return new JwtProperties(JWT_SECRET, JWT_ISSUER, 1L, 1L);
-    }
-
     public static JwtProperties alternateIssuerJwtProperties() {
         return new JwtProperties(JWT_SECRET, "other-issuer", 900L, 604_800L);
     }

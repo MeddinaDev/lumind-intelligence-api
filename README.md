@@ -2,7 +2,7 @@
 
 > Backend REST desarrollado con Spring Boot 3.5 para la plataforma de productividad Lumind.
 
-> Arquitectura modular basada en features, autenticación JWT, migraciones Flyway, documentación OpenAPI y **154 tests automatizados** con ~91 % de cobertura JaCoCo.
+> Arquitectura modular basada en features, autenticación JWT, migraciones Flyway, documentación OpenAPI y **174 tests automatizados** con ~91 % de cobertura JaCoCo.
 
 ## Características
 
@@ -69,7 +69,7 @@
 
 - Arquitectura Feature-Based
 - Clean Code · SOLID
-- 154 tests · ~91 % cobertura JaCoCo (instrucciones)
+- 174 tests · ~91 % cobertura JaCoCo (instrucciones)
 - Bean Validation · MapStruct
 - JUnit 5 · Mockito · MockMvc
 
@@ -101,7 +101,7 @@ mvn spring-boot:run
 > **Nota:** `JWT_SECRET` es obligatorio. Copia [`.env.example`](.env.example) a `.env` o exporta las variables en tu shell.
 
 ```bash
-mvn clean verify   # Compilar, tests (154), reporte JaCoCo y quality gate
+mvn clean verify   # Compilar, tests (174), reporte JaCoCo y quality gate
 mvn package        # Compilar y empaquetar
 ```
 

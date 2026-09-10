@@ -57,7 +57,7 @@ El objetivo es simular el desarrollo de un backend de producción presentable en
 
 - **Sprint actual:** 8 — Testing & Hardening
 - **Sprints completados:** 0–7 (setup, auth, habits, tasks, pomodoro, statistics, AI)
-- **Tests:** 166 automatizados; ~91 % cobertura JaCoCo
+- **Tests:** 174 automatizados; ~91 % cobertura JaCoCo
 - **Migraciones Flyway:** V1–V5
 
 ---

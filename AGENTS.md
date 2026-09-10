@@ -67,7 +67,7 @@ Lumind es una plataforma de productividad impulsada por IA. El objetivo es const
 | User | 🔄 Entidad + repository; sin endpoints de perfil |
 | Seguridad | ✅ JWT Bearer (`SecurityConfig` stateless); HTTP Basic eliminado |
 | Flyway | ✅ Migraciones V1–V5 (users, refresh_tokens, habits, tasks, pomodoro_sessions) |
-| Tests | ✅ 166 tests automatizados; ~91 % cobertura JaCoCo (instrucciones) |
+| Tests | ✅ 174 tests automatizados; ~91 % cobertura JaCoCo (instrucciones) |
 | Docker | ⏳ Planificado; sin `Dockerfile` ni `docker-compose` |
 | CI/CD | ✅ GitHub Actions (`mvn clean verify` + gate JaCoCo) |
 
@@ -88,7 +88,7 @@ La autenticación JWT está operativa: servicios, filtro, endpoints y tests en p
 - SpringDoc / Swagger (OpenAPI)
 - MapStruct
 - Lombok
-- JUnit 5 + Mockito + MockMvc (154 tests)
+- JUnit 5 + Mockito + MockMvc (174 tests)
 - Testcontainers PostgreSQL (tests de integración)
 - GitHub Actions CI + gate JaCoCo en `mvn verify`
 - Spring Boot Actuator

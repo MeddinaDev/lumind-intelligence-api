@@ -93,24 +93,18 @@ class JwtServiceTest {
     }
 
     @Test
-    void parseAndValidateAccessToken_rejectsExpiredToken() throws InterruptedException {
-        JwtService shortLivedJwtService = new JwtService(AuthTestData.shortLivedJwtProperties());
-        String token = shortLivedJwtService.generateAccessToken(user);
+    void parseAndValidateAccessToken_rejectsExpiredToken() {
+        String token = signExpiredAccessToken();
 
-        Thread.sleep(1_500);
-
-        assertThatThrownBy(() -> shortLivedJwtService.parseAndValidateAccessToken(token))
+        assertThatThrownBy(() -> jwtService.parseAndValidateAccessToken(token))
                 .isInstanceOf(ExpiredJwtException.class);
     }
 
     @Test
-    void parseAndValidateRefreshToken_rejectsExpiredToken() throws InterruptedException {
-        JwtService shortLivedJwtService = new JwtService(AuthTestData.shortLivedJwtProperties());
-        String token = shortLivedJwtService.generateRefreshToken(user);
+    void parseAndValidateRefreshToken_rejectsExpiredToken() {
+        String token = signExpiredRefreshToken();
 
-        Thread.sleep(1_500);
-
-        assertThatThrownBy(() -> shortLivedJwtService.parseAndValidateRefreshToken(token))
+        assertThatThrownBy(() -> jwtService.parseAndValidateRefreshToken(token))
                 .isInstanceOf(ExpiredJwtException.class);
     }
 
@@ -166,6 +160,43 @@ class JwtServiceTest {
                 .issuer(properties.issuer())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(now.plusSeconds(properties.accessTokenExpiration())))
+                .signWith(signingKey)
+                .compact();
+    }
+
+    private String signExpiredAccessToken() {
+        JwtProperties properties = AuthTestData.defaultJwtProperties();
+        SecretKey signingKey = Keys.hmacShaKeyFor(
+                io.jsonwebtoken.io.Decoders.BASE64.decode(properties.secret())
+        );
+        Instant expiredAt = Instant.now().minusSeconds(10);
+        Instant issuedAt = expiredAt.minusSeconds(60);
+
+        return Jwts.builder()
+                .subject(user.getId().toString())
+                .claim("email", user.getEmail())
+                .issuer(properties.issuer())
+                .issuedAt(Date.from(issuedAt))
+                .expiration(Date.from(expiredAt))
+                .signWith(signingKey)
+                .compact();
+    }
+
+    private String signExpiredRefreshToken() {
+        JwtProperties properties = AuthTestData.defaultJwtProperties();
+        SecretKey signingKey = Keys.hmacShaKeyFor(
+                io.jsonwebtoken.io.Decoders.BASE64.decode(properties.secret())
+        );
+        Instant expiredAt = Instant.now().minusSeconds(10);
+        Instant issuedAt = expiredAt.minusSeconds(60);
+
+        return Jwts.builder()
+                .subject(user.getId().toString())
+                .claim("type", "refresh")
+                .id(UUID.randomUUID().toString())
+                .issuer(properties.issuer())
+                .issuedAt(Date.from(issuedAt))
+                .expiration(Date.from(expiredAt))
                 .signWith(signingKey)
                 .compact();
     }
