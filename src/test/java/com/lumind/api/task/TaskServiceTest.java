@@ -20,6 +20,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -28,6 +29,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -154,6 +156,72 @@ class TaskServiceTest {
 
         assertThat(response).isEqualTo(updatedResponse);
         verify(taskMapper).updateEntity(request, task);
+    }
+
+    @Test
+    void update_markCompleted_setsCompletedAt() {
+        task.setCompleted(false);
+        UpdateTaskRequest request = new UpdateTaskRequest(null, null, true);
+
+        when(taskRepository.findByIdAndUser_Id(task.getId(), user.getId()))
+                .thenReturn(Optional.of(task));
+        doAnswer(invocation -> {
+            task.setCompleted(true);
+            return null;
+        }).when(taskMapper).updateEntity(request, task);
+        when(taskRepository.save(task)).thenAnswer(invocation -> invocation.getArgument(0));
+        when(taskMapper.toResponse(task)).thenReturn(taskResponse);
+
+        taskService.update(user.getId(), task.getId(), request);
+
+        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+        verify(taskRepository).save(taskCaptor.capture());
+        assertThat(taskCaptor.getValue().getCompletedAt()).isNotNull();
+    }
+
+    @Test
+    void update_alreadyCompleted_titleChange_doesNotChangeCompletedAt() {
+        Instant originalCompletedAt = Instant.parse("2026-01-10T10:00:00Z");
+        task.setCompleted(true);
+        task.setCompletedAt(originalCompletedAt);
+        UpdateTaskRequest request = new UpdateTaskRequest("New title", null, null);
+
+        when(taskRepository.findByIdAndUser_Id(task.getId(), user.getId()))
+                .thenReturn(Optional.of(task));
+        doAnswer(invocation -> {
+            task.setTitle("New title");
+            return null;
+        }).when(taskMapper).updateEntity(request, task);
+        when(taskRepository.save(task)).thenAnswer(invocation -> invocation.getArgument(0));
+        when(taskMapper.toResponse(task)).thenReturn(taskResponse);
+
+        taskService.update(user.getId(), task.getId(), request);
+
+        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+        verify(taskRepository).save(taskCaptor.capture());
+        assertThat(taskCaptor.getValue().getCompletedAt()).isEqualTo(originalCompletedAt);
+    }
+
+    @Test
+    void update_uncomplete_clearsCompletedAt() {
+        task.setCompleted(true);
+        task.setCompletedAt(Instant.parse("2026-01-10T10:00:00Z"));
+        UpdateTaskRequest request = new UpdateTaskRequest(null, null, false);
+
+        when(taskRepository.findByIdAndUser_Id(task.getId(), user.getId()))
+                .thenReturn(Optional.of(task));
+        doAnswer(invocation -> {
+            task.setCompleted(false);
+            return null;
+        }).when(taskMapper).updateEntity(request, task);
+        when(taskRepository.save(task)).thenAnswer(invocation -> invocation.getArgument(0));
+        when(taskMapper.toResponse(task)).thenReturn(taskResponse);
+
+        taskService.update(user.getId(), task.getId(), request);
+
+        ArgumentCaptor<Task> taskCaptor = ArgumentCaptor.forClass(Task.class);
+        verify(taskRepository).save(taskCaptor.capture());
+        assertThat(taskCaptor.getValue().getCompletedAt()).isNull();
     }
 
     @Test

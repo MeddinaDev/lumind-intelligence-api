@@ -9,6 +9,7 @@ public record TaskResponse(
         String title,
         String description,
         boolean completed,
+        Instant completedAt,
         Instant createdAt,
         Instant updatedAt
 ) {

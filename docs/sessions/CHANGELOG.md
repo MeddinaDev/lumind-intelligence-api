@@ -1,5 +1,35 @@
 # Development Log
 
+## 2026-09-10 — Fase 45
+
+### Sprint
+Sprint 8 - Testing & Hardening
+
+### Objetivo
+Endurecer persistencia y semántica temporal de Statistics: timestamp explícito de completado de tareas, agrupación UTC determinista e índices alineados con consultas reales.
+
+### Cambios realizados
+- Migración Flyway V6: columna `tasks.completed_at`, backfill desde `updated_at` para tareas ya completadas, índices compuestos para consultas de statistics.
+- Campo `completedAt` en Task; transiciones de completado en `TaskService`; `TaskResponse` expone `completedAt`.
+- Statistics usa `completedAt` (conteos y `completedByDay`) en lugar de `updatedAt`.
+- `hibernate.jdbc.time_zone=UTC` y `spring.datasource.hikari.connection-init-sql: SET TIME ZONE 'UTC'` para agrupación diaria determinista sobre `TIMESTAMPTZ`.
+- Tests unitarios e integración ampliados (completado, edición, statistics por día UTC, sesión PG en UTC).
+- Actualizados ADR 008, spec de statistics y prompt de IA.
+
+### Decisiones tomadas
+- Sin refactor del read model de Statistics (ADR 007 se mantiene).
+- Índices parciales solo donde el filtro temporal usa columnas nullable (`completed_at`, `finished_at`).
+- Datos históricos: `completed_at` backfill como aproximación aceptada.
+- Instant/TIMESTAMPTZ + sesión PostgreSQL en UTC como garantía de buckets calendariales alineados con la API.
+
+### Estado del proyecto
+🔄 Sprint 8 en curso — Fase 45 (Persistence & Performance Hardening) completada.
+
+### Próximo paso
+Cierre Sprint 8 o fases opcionales (Gemini HTTP real, limpieza batch refresh tokens).
+
+---
+
 ## 2026-07-06
 
 ### Sprint

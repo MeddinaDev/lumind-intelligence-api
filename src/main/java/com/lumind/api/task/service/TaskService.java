@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,6 +41,7 @@ public class TaskService {
 
         Task task = taskMapper.toEntity(request);
         task.setUser(user);
+        applyCompletionTransition(task, false);
         task = taskRepository.save(task);
 
         log.info("Task created: taskId={}, userId={}", task.getId(), userId);
@@ -62,7 +64,9 @@ public class TaskService {
     @Transactional
     public TaskResponse update(UUID userId, UUID taskId, UpdateTaskRequest request) {
         Task task = findTaskForUser(userId, taskId);
+        boolean wasCompleted = task.isCompleted();
         taskMapper.updateEntity(request, task);
+        applyCompletionTransition(task, wasCompleted);
         task = taskRepository.save(task);
 
         log.info("Task updated: taskId={}, userId={}", taskId, userId);
@@ -80,5 +84,15 @@ public class TaskService {
     private Task findTaskForUser(UUID userId, UUID taskId) {
         return taskRepository.findByIdAndUser_Id(taskId, userId)
                 .orElseThrow(TaskNotFoundException::new);
+    }
+
+    private void applyCompletionTransition(Task task, boolean wasCompleted) {
+        if (task.isCompleted()) {
+            if (!wasCompleted) {
+                task.setCompletedAt(Instant.now());
+            }
+            return;
+        }
+        task.setCompletedAt(null);
     }
 }

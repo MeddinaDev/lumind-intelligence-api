@@ -332,7 +332,7 @@ El builder recibe únicamente `ProductivityAnalysisPromptInput`, compuesto por:
 
 ### 7.3 Estructura del prompt (borrador)
 
-1. **System / instrucciones:** rol del asistente (coach de productividad), idioma de salida (español), tono profesional y conciso, limitaciones del modelo de datos (sin completados de hábitos, `updatedAt` como proxy de completado de tareas).
+1. **System / instrucciones:** rol del asistente (coach de productividad), idioma de salida (español), tono profesional y conciso, limitaciones del modelo de datos (sin completados de hábitos; tareas usan `completedAt` UTC).
 2. **Contexto temporal:** `from`, `to`, duración en días.
 3. **Bloque de métricas:** serialización estructurada (JSON recomendado) de los cuatro DTOs.
 4. **Formato de salida exigido:** JSON con campos `summary` (string), `insights` (array de strings), `recommendations` (array de strings) para facilitar parseo determinista.

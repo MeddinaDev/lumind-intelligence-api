@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -273,6 +274,69 @@ class StatisticsControllerIntegrationTest extends AbstractIntegrationTest {
                     .andExpect(jsonPath("$.status").value(400))
                     .andExpect(jsonPath("$.message").value("Invalid statistics period"));
         }
+    }
+
+    @Test
+    void getTasks_completedAtNotUpdatedAt_countsCompletionOnOriginalDay() throws Exception {
+        String accessToken = registerAndGetAccessToken("statistics.completedAt@example.com");
+        String taskId = createTask(accessToken, TaskTestData.validCreateRequest("Stats task", "Completion day"));
+        completeTask(accessToken, taskId, TaskTestData.validUpdateRequest());
+
+        Instant fixedCompletedAt = Instant.parse("2026-03-01T15:30:00Z");
+        taskRepository.findById(UUID.fromString(taskId)).ifPresent(task -> {
+            task.setCompletedAt(fixedCompletedAt);
+            taskRepository.save(task);
+        });
+
+        mockMvc.perform(patch(TASKS_URL + "/" + taskId)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(accessToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                new UpdateTaskRequest("Edited after completion", null, null))))
+                .andExpect(status().isOk());
+
+        String completionDayPeriod = "from=2026-03-01T00:00:00Z&to=2026-03-01T23:59:59Z";
+        mockMvc.perform(get(STATISTICS_URL + "/tasks?" + completionDayPeriod)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(accessToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.completed").value(1))
+                .andExpect(jsonPath("$.completedByDay.length()").value(1))
+                .andExpect(jsonPath("$.completedByDay[0].date").value("2026-03-01"));
+
+        String editDayPeriod = "from=2026-09-10T00:00:00Z&to=2026-09-10T23:59:59Z";
+        mockMvc.perform(get(STATISTICS_URL + "/tasks?" + editDayPeriod)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(accessToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.completed").value(0))
+                .andExpect(jsonPath("$.completedByDay").isEmpty());
+    }
+
+    @Test
+    void getTasks_completedNearUtcMidnight_groupsOnUtcCalendarDay() throws Exception {
+        String accessToken = registerAndGetAccessToken("statistics.utc-midnight@example.com");
+        String taskId = createTask(accessToken, TaskTestData.validCreateRequest("Late UTC task", "Near midnight"));
+        completeTask(accessToken, taskId, TaskTestData.validUpdateRequest());
+
+        Instant nearMidnightUtc = Instant.parse("2026-01-15T23:30:00Z");
+        taskRepository.findById(UUID.fromString(taskId)).ifPresent(task -> {
+            task.setCompletedAt(nearMidnightUtc);
+            taskRepository.save(task);
+        });
+
+        String utcDayPeriod = "from=2026-01-15T00:00:00Z&to=2026-01-15T23:59:59Z";
+        mockMvc.perform(get(STATISTICS_URL + "/tasks?" + utcDayPeriod)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(accessToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.completed").value(1))
+                .andExpect(jsonPath("$.completedByDay.length()").value(1))
+                .andExpect(jsonPath("$.completedByDay[0].date").value("2026-01-15"));
+
+        String nextUtcDayPeriod = "from=2026-01-16T00:00:00Z&to=2026-01-16T23:59:59Z";
+        mockMvc.perform(get(STATISTICS_URL + "/tasks?" + nextUtcDayPeriod)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(accessToken)))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.completed").value(0))
+                .andExpect(jsonPath("$.completedByDay").isEmpty());
     }
 
     @Test

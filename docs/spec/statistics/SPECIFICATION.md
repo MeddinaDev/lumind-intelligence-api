@@ -60,7 +60,7 @@ Exponer métricas de productividad **calculadas en tiempo de consulta** a partir
 | **Authentication** | Sesiones JWT, refresh tokens | Solo autenticación; no aporta métricas de productividad. |
 | **User** | Identidad, `createdAt` | Filtro por `userId`; opcionalmente contexto de antigüedad de cuenta (fuera de alcance inicial). |
 | **Habit** | `name`, `description`, `createdAt` | Conteo total de hábitos del usuario e hábitos creados en el periodo. **No** hay campo de completado. |
-| **Task** | `completed`, `createdAt`, `updatedAt` | Tareas creadas/completadas en periodo; tasa de completado. `updatedAt` actúa como **proxy** de fecha de completado. |
+| **Task** | `completed`, `createdAt`, `completedAt` | Tareas creadas/completadas en periodo; tasa de completado según `completedAt`. |
 | **Pomodoro** | `durationMinutes`, `completedMinutes`, `completed`, `startedAt`, `finishedAt` | Sesiones iniciadas/completadas; minutos de foco (`completedMinutes`); tasas de completado. |
 
 **Principio:** Statistics es un **read model** transversal. Los datos maestros siguen viviendo en sus features de origen.
@@ -112,7 +112,7 @@ Parámetros de consulta compartidos (ver `StatisticsPeriodQuery`):
 | **Finalidad** | Detalle de productividad en gestión de tareas, incluida tendencia diaria para gráficos. |
 | **Request** | Query: `StatisticsPeriodQuery`. |
 | **Response** | `200 OK` — `TaskStatisticsResponse`. |
-| **Origen de datos** | Tabla `tasks` (`createdAt`, `updatedAt`, `completed`, `user_id`). |
+| **Origen de datos** | Tabla `tasks` (`createdAt`, `completedAt`, `completed`, `user_id`). |
 | **Reglas de negocio** | Ver §5.1. Tendencia diaria: tareas completadas por día UTC. |
 
 ### 3.3 GET `/api/v1/statistics/pomodoro-sessions`
@@ -245,10 +245,10 @@ public record HabitStatisticsResponse(
 | Métrica | Definición | Justificación |
 |---------|------------|---------------|
 | `created` | `COUNT` tareas con `createdAt ∈ [from, to]` | Mide volumen de planificación en el periodo. |
-| `completed` | `COUNT` tareas con `completed = true` y `updatedAt ∈ [from, to]` | Aproxima completados; no existe `completedAt`. Documentado como limitación. |
+| `completed` | `COUNT` tareas con `completed = true` y `completedAt ∈ [from, to]` | Completados en el periodo según timestamp de cierre. |
 | `pendingCreatedInPeriod` | `COUNT` tareas con `completed = false` y `createdAt ∈ [from, to]` | Identifica backlog generado en el periodo. |
 | `completionRate` | `completed / created` si `created > 0`, else `0.0` | KPI simple de cierre sobre lo planificado en el periodo. |
-| `completedByDay` | Agrupación UTC por día de `updatedAt` donde `completed = true` | Alimenta gráficos de actividad sin duplicar overview. |
+| `completedByDay` | Agrupación UTC por día de `completedAt` donde `completed = true` | Alimenta gráficos de actividad sin duplicar overview. |
 
 ### 5.2 Sesiones Pomodoro
 
@@ -327,9 +327,7 @@ statistics/
 ### Deuda técnica aceptada
 
 - JPQL cross-feature sobre entidades `Task`, `Habit`, `PomodoroSession` (acoplamiento de lectura documentado en ADR 007).
-- `updatedAt` como proxy de fecha de completado en Task (sin campo `completedAt`).
-- Agrupación diaria dependiente de timezone JVM/Hibernate.
-- Índices compuestos por rango de fechas pendientes de optimización.
+- Datos históricos de `completed_at` backfill desde `updated_at` (migración V6).
 - Sin paginación ni caché de agregaciones.
 
 ---

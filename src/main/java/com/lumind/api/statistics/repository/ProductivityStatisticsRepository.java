@@ -41,8 +41,9 @@ public class ProductivityStatisticsRepository {
                         SELECT COUNT(t) FROM Task t
                         WHERE t.user.id = :userId
                           AND t.completed = true
-                          AND t.updatedAt >= :from
-                          AND t.updatedAt <= :to
+                          AND t.completedAt IS NOT NULL
+                          AND t.completedAt >= :from
+                          AND t.completedAt <= :to
                         """,
                         Long.class
                 )
@@ -72,13 +73,14 @@ public class ProductivityStatisticsRepository {
     public List<DailyCountAggregation> findTasksCompletedByDay(UUID userId, Instant from, Instant to) {
         List<Object[]> rows = entityManager.createQuery(
                         """
-                        SELECT CAST(t.updatedAt AS localdate), COUNT(t) FROM Task t
+                        SELECT CAST(t.completedAt AS localdate), COUNT(t) FROM Task t
                         WHERE t.user.id = :userId
                           AND t.completed = true
-                          AND t.updatedAt >= :from
-                          AND t.updatedAt <= :to
-                        GROUP BY CAST(t.updatedAt AS localdate)
-                        ORDER BY CAST(t.updatedAt AS localdate) ASC
+                          AND t.completedAt IS NOT NULL
+                          AND t.completedAt >= :from
+                          AND t.completedAt <= :to
+                        GROUP BY CAST(t.completedAt AS localdate)
+                        ORDER BY CAST(t.completedAt AS localdate) ASC
                         """,
                         Object[].class
                 )

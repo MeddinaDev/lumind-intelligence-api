@@ -41,7 +41,7 @@ public class ProductivityAnalysisPromptBuilder {
                 productivity application. Respond in Spanish with a professional and concise tone.
 
                 ## Data limitations
-                - Task completion dates use updatedAt as a proxy; there is no completedAt field.
+                - Task completion dates use the completedAt timestamp (UTC).
                 - Habit completion and streak metrics are not available; only inventory and creations in period.
                 - Base your analysis exclusively on the metrics provided below. Do not invent data.
                 - If all metrics are zero, acknowledge the lack of activity and suggest constructive next steps.

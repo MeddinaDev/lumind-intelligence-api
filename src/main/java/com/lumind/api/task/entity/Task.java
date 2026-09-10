@@ -41,6 +41,9 @@ public class Task {
     @Column(nullable = false)
     private boolean completed;
 
+    @Column(name = "completed_at")
+    private Instant completedAt;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 

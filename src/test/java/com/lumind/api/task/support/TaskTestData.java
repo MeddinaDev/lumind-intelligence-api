@@ -49,6 +49,7 @@ public final class TaskTestData {
                 task.getTitle(),
                 task.getDescription(),
                 task.isCompleted(),
+                task.getCompletedAt(),
                 task.getCreatedAt(),
                 task.getUpdatedAt()
         );

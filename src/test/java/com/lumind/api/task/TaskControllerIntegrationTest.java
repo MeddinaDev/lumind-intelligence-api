@@ -22,6 +22,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
 import java.util.Map;
 import java.util.UUID;
 
@@ -74,6 +75,7 @@ class TaskControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.title").value(request.title()))
                 .andExpect(jsonPath("$.description").value(request.description()))
                 .andExpect(jsonPath("$.completed").value(false))
+                .andExpect(jsonPath("$.completedAt").isEmpty())
                 .andExpect(jsonPath("$.userId").isNotEmpty())
                 .andExpect(jsonPath("$.createdAt").isNotEmpty())
                 .andExpect(jsonPath("$.updatedAt").isNotEmpty());
@@ -165,7 +167,49 @@ class TaskControllerIntegrationTest extends AbstractIntegrationTest {
                 .andExpect(jsonPath("$.id").value(taskId))
                 .andExpect(jsonPath("$.title").value(request.title()))
                 .andExpect(jsonPath("$.description").value(request.description()))
-                .andExpect(jsonPath("$.completed").value(true));
+                .andExpect(jsonPath("$.completed").value(true))
+                .andExpect(jsonPath("$.completedAt").isNotEmpty());
+    }
+
+    @Test
+    void update_completedTask_titleOnly_keepsCompletedAt() throws Exception {
+        String accessToken = registerAndGetAccessToken("task.completedAt@example.com");
+        String taskId = createTask(accessToken, TaskTestData.validCreateRequest());
+        completeTask(accessToken, taskId);
+
+        MvcResult completedResult = mockMvc.perform(get(TASKS_URL + "/" + taskId)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(accessToken)))
+                .andExpect(status().isOk())
+                .andReturn();
+        Instant completedAt = Instant.parse(objectMapper.readTree(completedResult.getResponse().getContentAsString())
+                .path("completedAt")
+                .asText());
+
+        mockMvc.perform(patch(TASKS_URL + "/" + taskId)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(accessToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                new UpdateTaskRequest("Updated title only", null, null))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.title").value("Updated title only"))
+                .andExpect(jsonPath("$.completed").value(true))
+                .andExpect(jsonPath("$.completedAt").value(completedAt.toString()));
+    }
+
+    @Test
+    void update_uncompleteTask_clearsCompletedAt() throws Exception {
+        String accessToken = registerAndGetAccessToken("task.uncomplete@example.com");
+        String taskId = createTask(accessToken, TaskTestData.validCreateRequest());
+        completeTask(accessToken, taskId);
+
+        mockMvc.perform(patch(TASKS_URL + "/" + taskId)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(accessToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(
+                                new UpdateTaskRequest(null, null, false))))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.completed").value(false))
+                .andExpect(jsonPath("$.completedAt").isEmpty());
     }
 
     @Test
@@ -222,6 +266,14 @@ class TaskControllerIntegrationTest extends AbstractIntegrationTest {
                 .andReturn();
 
         return extractAccessToken(result);
+    }
+
+    private void completeTask(String accessToken, String taskId) throws Exception {
+        mockMvc.perform(patch(TASKS_URL + "/" + taskId)
+                        .header(HttpHeaders.AUTHORIZATION, bearer(accessToken))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(TaskTestData.validUpdateRequest())))
+                .andExpect(status().isOk());
     }
 
     private String createTask(String accessToken, CreateTaskRequest request) throws Exception {

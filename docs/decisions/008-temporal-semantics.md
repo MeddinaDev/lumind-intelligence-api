@@ -21,13 +21,15 @@ Las métricas de Statistics agrupan datos por periodos temporales. Cada entidad 
 - Sprint 6 opera en **UTC** para resolución de periodos y agrupación diaria.
 - Periodo por defecto: últimos **30 días** UTC cuando `from`/`to` no se envían.
 - Periodo máximo: **366 días**; rangos inválidos devuelven `400`.
+- Las fechas se modelan como instantes absolutos mediante **`Instant`** / **`TIMESTAMPTZ`**.
+- Las conexiones PostgreSQL (Hikari) se inicializan con **`SET TIME ZONE 'UTC'`**, junto con `hibernate.jdbc.time_zone=UTC`, para que operaciones como `CAST(timestamptz AS date)` en agrupaciones calendariales sean deterministas y coherentes con la semántica UTC de la API.
 
 ### Semántica por entidad
 
 | Entidad | Campo(s) usados | Semántica |
 |---------|-----------------|-----------|
 | **Task** | `createdAt` | Tareas creadas en el periodo |
-| **Task** | `updatedAt` + `completed = true` | **Proxy** de fecha de completado (deuda técnica: no existe `completedAt`) |
+| **Task** | `completedAt` + `completed = true` | Momento UTC en que la tarea pasó a completada; no cambia al editar metadatos |
 | **PomodoroSession** | `startedAt` | Sesiones iniciadas en el periodo |
 | **PomodoroSession** | `finishedAt` + `completed = true` | Sesiones completadas |
 | **PomodoroSession** | `completedMinutes` | Minutos de foco acumulados |
@@ -35,8 +37,7 @@ Las métricas de Statistics agrupan datos por periodos temporales. Cada entidad 
 
 ### Agrupación diaria
 
-- Tendencias diarias usan `CAST(timestamp AS localdate)` en JPQL, dependiente del timezone JVM/Hibernate.
-- Evolución futura: normalización explícita a UTC en PostgreSQL.
+- Tendencias diarias usan `CAST(timestamp AS localdate)` en JPQL; PostgreSQL aplica la zona de sesión al convertir `timestamptz` a fecha, por lo que la sesión se fija a **UTC** en el pool de conexiones.
 
 ---
 
@@ -49,8 +50,7 @@ Las métricas de Statistics agrupan datos por periodos temporales. Cada entidad 
 
 ### Negativas
 
-- `updatedAt` como proxy de completado puede distorsionar métricas si se edita una tarea tras marcarla completada.
-- Agrupación diaria sensible a timezone del entorno de ejecución.
+- Tareas completadas antes de F45 conservan `completed_at` backfill desde `updated_at` (aproximación histórica).
 
 ---
 

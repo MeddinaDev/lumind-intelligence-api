@@ -17,6 +17,7 @@ public interface TaskMapper {
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "completedAt", ignore = true)
     @Mapping(target = "completed", defaultValue = "false")
     Task toEntity(CreateTaskRequest request);
 
@@ -28,5 +29,6 @@ public interface TaskMapper {
     @Mapping(target = "user", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
     @Mapping(target = "updatedAt", ignore = true)
+    @Mapping(target = "completedAt", ignore = true)
     void updateEntity(UpdateTaskRequest request, @MappingTarget Task task);
 }
