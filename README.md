@@ -48,6 +48,8 @@ Internal architecture notes: [docs/architecture/ARCHITECTURE.md](docs/architectu
 
 ## Architecture
 
+![Lumind Intelligence API Architecture](docs/architecture/architecture.svg)
+
 The codebase uses a **feature-based layout**: each module under `com.lumind.api` typically includes a controller, service, repository, entity, DTOs, and a MapStruct mapper. Shared cross-cutting code (exceptions, utilities, constants) lives in `common`.
 
 Within each feature, responsibilities follow familiar Spring layering—thin controllers, services for business rules, repositories for persistence—aligned with SOLID-style separation without claiming a full hexagonal/Clean Architecture stack.
